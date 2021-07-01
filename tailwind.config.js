@@ -12,31 +12,31 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'jets': {
-          '50': '#EFF1FE',
-          '100': '#E0E3FD',
-          '200': '#C2C7FB',
-          '300': '#A4ACF9',
-          '400': '#8690F7',
-          '500': '#6875F5',
-          '600': '#5D69DC',
-          '700': '#535DC4',
-          '800': '#3E4693',
-          '900': '#292E62'
-        },
+        jets: {
+          50: '#EFF1FE',
+          100: '#E0E3FD',
+          200: '#C2C7FB',
+          300: '#A4ACF9',
+          400: '#8690F7',
+          500: '#6875F5',
+          600: '#5D69DC',
+          700: '#535DC4',
+          800: '#3E4693',
+          900: '#292E62'
+        }
       },
       fontFamily: {
-        sans: ['Nunito', ...defaultTheme.fontFamily.sans],
-      },
-    },
+        sans: ['Nunito', ...defaultTheme.fontFamily.sans]
+      }
+    }
   },
   variants: {
     extend: {
-      opacity: ['disabled'],
-    },
+      opacity: ['disabled']
+    }
   },
   plugins: [
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography')
-  ],
+  ]
 };
