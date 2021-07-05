@@ -16,26 +16,26 @@
       <div>
         <x-jet-label for="email" value="{{ __('Email') }}" />
         @php
-          $borderColor = $errors->has('email')
-          ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
-          : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+        $borderColor = $errors->has('email')
+        ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+        : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
         @endphp
         <x-input id="email" name="email" type="email" required autofocus
           class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
-        <x-error field="email" class="mt-1 font-medium text-sm text-red-600" />
+        <x-error field="email" class="relative py-3 px-3 leading-normal text-red-700 bg-red-100 rounded-lg" />
       </div>
 
       <!-- password -->
       <div class="mt-4">
         <x-jet-label for="password" value="{{ __('Password') }}" />
         @php
-          $borderColor = $errors->has('password')
-          ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
-          : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+        $borderColor = $errors->has('password')
+        ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+        : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
         @endphp
         <x-form.password-show id="password" name="password"
           class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
-        <x-error field="password" class="mt-1 font-medium text-sm text-red-600" />
+        <x-error field="password" class="relative py-3 px-3 leading-normal text-red-700 bg-red-100 rounded-lg" />
       </div>
 
       <!-- Remember Me -->
