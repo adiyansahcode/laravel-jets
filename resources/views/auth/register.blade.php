@@ -86,7 +86,7 @@
 
         <button type="submit"
           class="px-1 py-1 items-center bg-jets-500 border border-transparent rounded-md font-medium text-base text-white uppercase tracking-widest hover:bg-jets-700 active:bg-jets-900 focus:outline-none focus:border-jets-900 focus:ring ring-jets-300 disabled:opacity-25 transition ease-in-out duration-150 flex-auto">
-          Sign in
+          Sign Up
         </button>
 
       </div>
