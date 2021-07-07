@@ -79,14 +79,16 @@
       </div>
       @endif
 
-      <div class="flex items-center justify-end mt-4">
-        <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
+      <div class="flex items-center justify-between mt-4">
+        <a href="{{ route('login') }}" class="flex-auto underline text-sm text-gray-600 hover:text-gray-900">
           {{ __('Already registered?') }}
         </a>
 
-        <x-jet-button class="ml-4">
-          {{ __('Register') }}
-        </x-jet-button>
+        <button type="submit"
+          class="px-1 py-1 items-center bg-jets-500 border border-transparent rounded-md font-medium text-base text-white uppercase tracking-widest hover:bg-jets-700 active:bg-jets-900 focus:outline-none focus:border-jets-900 focus:ring ring-jets-300 disabled:opacity-25 transition ease-in-out duration-150 flex-auto">
+          Sign in
+        </button>
+
       </div>
     </x-form>
   </x-jet-authentication-card>

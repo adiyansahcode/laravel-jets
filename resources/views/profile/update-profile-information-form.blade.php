@@ -79,13 +79,13 @@
   </x-slot>
 
   <x-slot name="actions">
-    <x-jet-action-message class="mr-3" on="saved">
+    <x-jet-action-message on="saved" role="alert" class="items-center px-4 py-2 text-xs text-green-700 bg-green-100 rounded-lg" >
       {{ __('Saved.') }}
     </x-jet-action-message>
 
-    <x-jet-button wire:loading.attr="disabled" wire:target="photo"
-      class="bg-jets-500 border border-transparent rounded-md text-white uppercase hover:bg-jets-700 active:bg-jets-900 focus:outline-none focus:border-jets-900 focus:ring ring-jets-300 disabled:opacity-25 transition ease-in-out duration-150">
-      {{ __('Save') }}
-    </x-jet-button>
+    <button type="submit" wire:loading.attr="disabled" wire:target="photo"
+      class="items-center px-4 py-2 bg-jets-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-jets-700 active:bg-jets-900 focus:outline-none focus:border-jets-900 focus:ring focus:ring-jets-300 disabled:opacity-25 transition">
+      Save
+    </button>
   </x-slot>
 </x-jet-form-section>
