@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+declare(strict_types=1);
+
+namespace App\Http\Requests\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class UpdateUserRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     public function rules()
     {

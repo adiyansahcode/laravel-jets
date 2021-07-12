@@ -21,6 +21,11 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-
-    Route::resource('users', \App\Http\Controllers\UsersController::class);
 });
+
+/**
+ * read all file router
+ */
+foreach (glob(realpath(app_path() . '/Http/Router') . "/*Router.php") as $filename) {
+    include $filename;
+}

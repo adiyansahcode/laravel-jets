@@ -20,7 +20,7 @@
                   <tr>
                     <th scope="col" width="50"
                       class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      ID
+                      No
                     </th>
                     <th scope="col"
                       class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -47,7 +47,7 @@
                   @foreach ($users as $user)
                   <tr>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ $user->id }}
+                      {{ $loop->iteration }}
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
