@@ -28,6 +28,8 @@ class UsersSeeder extends Seeder
         // Create user manual with DB Facades
         DB::table('users')->insert([
             [
+                'created_at' => now(),
+                'updated_at' => now(),
                 'name' => 'admin',
                 'email' => 'admin@email.com',
                 'email_verified_at' => now(),
@@ -36,6 +38,8 @@ class UsersSeeder extends Seeder
         ]);
         DB::table('teams')->insert([
             [
+                'created_at' => now(),
+                'updated_at' => now(),
                 'user_id' => 1,
                 'name' => 'admin' . '\'s Team',
                 'personal_team' => true
@@ -57,6 +61,6 @@ class UsersSeeder extends Seeder
         $team->save();
 
         // Create user random
-        User::factory(5)->withPersonalTeam()->create();
+        User::factory(20)->withPersonalTeam()->create();
     }
 }
