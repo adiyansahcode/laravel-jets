@@ -1,6 +1,6 @@
 # Laravel 8 Starter
 
-WEB SPA Project base on [Laravel Jetstream](https://jetstream.laravel.com/2.x/introduction.html), [TailwindCss](https://tailwindcss.com/), & [Alpinejs](https://github.com/alpinejs/alpine/)
+WEB FullStack-SPA Project base on [Laravel Jetstream](https://jetstream.laravel.com/2.x/introduction.html), [TailwindCss](https://tailwindcss.com/), & [Alpinejs](https://github.com/alpinejs/alpine/)
 
 <p>
     <img alt="laravel" height="30px" width="35px" src="https://raw.githubusercontent.com/adiyansahcode/adiyansahcode/main/assets/laravel-icon-new.svg" />

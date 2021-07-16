@@ -1,4 +1,4 @@
-<x-base-layout :title="$title">
+<x-base-layout :title="isset($title) ? $title : ''">
   <div class="font-sans antialiased">
     <x-jet-banner />
 

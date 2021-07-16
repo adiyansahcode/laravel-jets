@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Livewire\Users;
 
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Str;
-use Illuminate\Support\Arr;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Filter;
@@ -14,20 +14,48 @@ use Carbon\Carbon;
 
 class Datatables extends DataTableComponent
 {
+    protected $listeners = [
+        'userRefresh' => '$refresh',
+    ];
+
+    /**
+     * The Page Name
+     */
     protected string $pageName = 'users';
 
+    /**
+     * The Table Name
+     */
     protected string $tableName = 'users';
 
+    /**
+     * Table primary key
+     */
     public string $primaryKey = 'id';
 
+    /**
+     * Setting show options to show column name
+     */
     public bool $columnSelect = true;
 
+    /**
+     * setting defaut sorting column name
+     */
     public string $defaultSortColumn = 'name';
 
+    /**
+     * setting defaut sorting direction
+     */
     public string $defaultSortDirection  = 'asc';
 
+    /**
+     * setting defaut for sorting only one column
+     */
     public bool $singleColumnSorting  = true;
 
+    /**
+     * setting for hide action when not selected row
+     */
     public bool $hideBulkActionsOnEmpty = true;
 
     /**
@@ -63,7 +91,7 @@ class Datatables extends DataTableComponent
      */
     public array $filters = [
         'verified' => '',
-        'role' => '',
+        'roleFilter' => '',
     ];
 
     /**
@@ -74,7 +102,7 @@ class Datatables extends DataTableComponent
     public function filters(): array
     {
         $roleArray = [
-            '' => 'All'
+            0 => 'All'
         ];
         $role = Role::orderBy('title')->get()->pluck('title', 'id')->toArray();
         $roleArray = array_merge($roleArray, $role);
@@ -94,7 +122,7 @@ class Datatables extends DataTableComponent
                 ->date([
                     'max' => now()->isoFormat('YYYY-MM-DD')
                 ]),
-            'role' => Filter::make('Role')
+            'roleFilter' => Filter::make('Role')
                 ->select($roleArray),
         ];
     }
@@ -112,7 +140,9 @@ class Datatables extends DataTableComponent
                 ->searchable(),
             Column::make('Role', 'roles')
                 ->format(function ($value) {
-                    $result = "<span class='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-jets-100 text-jets-800'> " . $value->first()->title . "</span>";
+                    $result = "<span class='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-jets-100 text-jets-800'> ";
+                    $result .= ($value->first()) ? ($value->first()->title) : null;
+                    $result .= "</span>";
                     return $result;
                 })->asHtml(),
             Column::make('Email', 'email')
@@ -135,7 +165,7 @@ class Datatables extends DataTableComponent
                 }),
             Column::make('Actions')
                 ->format(function ($value, $column, $row) {
-                    return view('users.action')->with('row', $row);
+                    return view('livewire.users.action')->with('row', $row);
                 }),
         ];
     }
@@ -162,7 +192,7 @@ class Datatables extends DataTableComponent
             ->when($this->getFilter('verifiedTo'), function ($query, $date) {
                 return $query->where('email_verified_at', '<=', $date);
             })
-            ->when($this->getFilter('role'), function ($query, $value) {
+            ->when($this->getFilter('roleFilter'), function ($query, $value) {
                 $query->whereHas('roles', function ($query) use ($value) {
                     $query->where('id', $value);
                 });
@@ -187,13 +217,25 @@ class Datatables extends DataTableComponent
         $this->resetBulk();
     }
 
-    // public function modalsView(): string
-    // {
-    //     return 'users.create';
-    // }
+    /**
+     * edit
+     *
+     * @param int $id
+     * @return void
+     */
+    public function edit(int $id): void
+    {
+        $this->emit('userEdit', $id);
+    }
 
-    // public function rowView(): string
-    // {
-    //     return 'users.rowView';
-    // }
+    /**
+     * edit
+     *
+     * @param int $id
+     * @return void
+     */
+    public function delete(int $id): void
+    {
+        $this->emit('userDelete', $id);
+    }
 }
