@@ -11,9 +11,9 @@
           <div>
             <x-jet-label for="name" value="{{ __('Name') }}" />
             @php
-              $borderColor = $errors->has('name')
-              ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
-              : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+            $borderColor = $errors->has('name')
+            ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+            : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
             @endphp
             <x-input id="name" name="name" wire:model="name"
               class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
@@ -23,9 +23,9 @@
           <div class="mt-4">
             <x-jet-label for="email" value="{{ __('Email') }}" />
             @php
-              $borderColor = $errors->has('email')
-              ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
-              : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+            $borderColor = $errors->has('email')
+            ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+            : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
             @endphp
             <x-input id="email" name="email" type="email" wire:model="email"
               class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
@@ -35,9 +35,9 @@
           <div class="mt-4">
             <x-jet-label for="password" value="{{ __('Password') }}" />
             @php
-              $borderColor = $errors->has('password')
-              ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
-              : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+            $borderColor = $errors->has('password')
+            ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+            : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
             @endphp
             <x-form.password-show id="password" name="password" wire:model="password"
               class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
@@ -47,18 +47,19 @@
           <div class="mt-4">
             <x-jet-label for="Role" value="{{ __('Role') }}" />
             @php
-              $borderColor = $errors->has('password_confirmation')
-              ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
-              : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+            $borderColor = $errors->has('password_confirmation')
+            ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+            : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
             @endphp
-            <select name="role" id="role" wire:model="role" class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}">
+            <select name="role" id="role" wire:model="role"
+              class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}">
               <option value='' selected="true" disabled="disabled">--choose data--</option>
-                @foreach($roles as $roleId => $roleTitle)
-                    <option value="{{ $roleId }}" >{{ $roleTitle }}</option>
-                @endforeach
+              @foreach($roles as $roleId => $roleTitle)
+              <option value="{{ $roleId }}">{{ $roleTitle }}</option>
+              @endforeach
             </select>
             <x-error field="role" class="mt-1 font-medium text-sm text-red-600" />
-        </div>
+          </div>
         </div>
 
         <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">

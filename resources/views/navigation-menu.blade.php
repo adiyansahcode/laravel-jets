@@ -16,10 +16,17 @@
               {{ __('Dashboard') }}
           </x-jet-nav-link>
         </div>
-        @can('user_access')
+        @can('userAccess')
             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                 <x-jet-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')">
                     Users
+                </x-jet-nav-link>
+            </div>
+        @endcan
+        @can('roleAccess')
+            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                <x-jet-nav-link href="#">
+                    Role
                 </x-jet-nav-link>
             </div>
         @endcan

@@ -5,22 +5,30 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
-    use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use SoftDeletes;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -28,9 +36,13 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
+        'uuid',
         'name',
+        'phone',
         'email',
         'password',
+        'date_of_birth',
+        'address',
     ];
 
     /**
@@ -39,6 +51,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
+        'uuid',
         'password',
         'remember_token',
         'two_factor_recovery_codes',
@@ -76,18 +89,56 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public function __construct(array $attributes = [])
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
     {
-        parent::__construct($attributes);
-        self::created(function (User $user) {
-            if (!$user->roles()->get()->contains(2)) {
-                $user->roles()->attach(2);
+        // event before create data
+        static::creating(function (User $user) {
+            $user->uuid = (string) Str::uuid();
+            $user->created_by = auth()->user()->id;
+            $user->updated_by = auth()->user()->id;
+        });
+
+        // event after create data
+        static::created(function (User $user) {
+            if (!$user->role) {
+                $user->role()->associate(2);
             }
+        });
+
+        // event before update data
+        static::updating(function (User $user) {
+            $user->updated_by = auth()->user()->id;
+        });
+
+        // event after delete data
+        static::deleted(function (User $user) {
+            $user->deleted_by = auth()->user()->id;
+            $user->save();
         });
     }
 
-    public function roles()
+    public function createdBy()
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function deletedBy()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
     }
 }

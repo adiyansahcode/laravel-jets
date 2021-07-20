@@ -29,8 +29,11 @@ class Index extends Component
      */
     public $dataId;
     public $name;
+    public $phone;
     public $email;
     public $password;
+    public $dateOfBirth;
+    public $address;
     public $roleId;
     public $role;
 
@@ -53,7 +56,7 @@ class Index extends Component
 
     public function render()
     {
-        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('userAccess'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('livewire.users.index')
             ->layoutData(['title' =>  $this->title]);
@@ -105,6 +108,8 @@ class Index extends Component
      */
     public function create()
     {
+        abort_if(Gate::denies('userCreate'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $this->resetValidation();
         $this->resetInputFields();
         $this->openCreateModal();
@@ -117,6 +122,8 @@ class Index extends Component
      */
     public function store()
     {
+        abort_if(Gate::denies('userCreate'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $this->validate([
             'name' => [
                 'string',
@@ -125,7 +132,9 @@ class Index extends Component
             'email'    => [
                 'required',
                 'email:rfc,dns',
-                'unique:App\Models\User,email',
+                Rule::unique('App\Models\User', 'email')->where(function ($query) {
+                    return $query->whereNull('deleted_at');
+                }),
             ],
             'password' => [
                 'required',
@@ -136,22 +145,26 @@ class Index extends Component
             'role' => [
                 'required',
                 'integer',
+                Rule::in(Role::all()->pluck('id')),
             ],
         ]);
 
-        $user = User::Create([
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => app('hash')->make($this->password),
-        ]);
+        $user = new User();
+        $user->name = $this->name;
+        $user->email = $this->email;
+        $user->password = app('hash')->make($this->password);
 
-        $user->roles()->sync($this->role, []);
+        $user->role()->associate($this->role);
+
+        $user->save();
 
         session()->flash('message', 'User Created Successfully.');
 
         $this->closeModal();
         $this->resetInputFields();
-        $this->emit('userRefresh');
+
+        $this->emit('showMessage');
+        $this->emit('refreshDatatable');
     }
 
     /**
@@ -161,6 +174,8 @@ class Index extends Component
      */
     public function edit($id)
     {
+        abort_if(Gate::denies('userUpdate'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $this->resetValidation();
         $this->resetInputFields();
 
@@ -168,8 +183,8 @@ class Index extends Component
         $this->dataId = $data->id;
         $this->name = $data->name;
         $this->email = $data->email;
-        $this->roleId = ($data->roles()->first()) ? ($data->roles()->first()->id) : null;
-        $this->role = ($data->roles()->first()) ? ($data->roles()->first()->id) : null;
+        $this->roleId = ($data->role) ? ($data->role->id) : null;
+        $this->role = ($data->role) ? ($data->role->id) : null;
 
         $this->openUpdateModal();
     }
@@ -181,6 +196,8 @@ class Index extends Component
      */
     public function update()
     {
+        abort_if(Gate::denies('userUpdate'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $this->validate([
             'name' => [
                 'string',
@@ -189,34 +206,43 @@ class Index extends Component
             'email'    => [
                 'required',
                 'email:rfc,dns',
-                'unique:App\Models\User,email,' . $this->dataId,
+                Rule::unique('App\Models\User', 'email')->ignore($this->dataId)->where(function ($query) {
+                    return $query->whereNull('deleted_at');
+                }),
             ],
             'role' => [
                 'required',
                 'integer',
+                Rule::in(Role::all()->pluck('id')),
             ],
         ]);
 
         $user = User::find($this->dataId);
+        $user->name = $this->name;
+        $user->email = $this->email;
 
-        $update = $user->update([
-            'name' => $this->name,
-            'email' => $this->email,
-        ]);
+        $user->role()->associate($this->role);
 
-        $user->roles()->sync($this->role);
+        $user->save();
 
         session()->flash('message', 'User Updated Successfully.');
 
         $this->closeModal();
         $this->resetInputFields();
-        $this->emit('userRefresh');
+
+        $this->emit('showMessage');
+        $this->emit('refreshDatatable');
     }
 
     public function delete($id)
     {
+        abort_if(Gate::denies('userDelete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         User::find($id)->delete();
+
         session()->flash('message', 'User Deleted Successfully.');
-        $this->emit('userRefresh');
+
+        $this->emit('showMessage');
+        $this->emit('refreshDatatable');
     }
 }

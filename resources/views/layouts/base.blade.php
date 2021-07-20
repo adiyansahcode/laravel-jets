@@ -1,6 +1,7 @@
-<x-html :title="isset($title) ? $title . ' | ' . config('app.name') : ''">
+<x-html :title="isset($title) ? $title . ' | ' . config('app.name') : config('app.name')">
 
   <x-slot name="head">
+
     <!-- favicon -->
     <!-- https://realfavicongenerator.net/ -->
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-touch-icon.png') }}" />

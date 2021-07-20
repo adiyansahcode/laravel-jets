@@ -14,15 +14,6 @@ use Carbon\Carbon;
 
 class Datatables extends DataTableComponent
 {
-    protected $listeners = [
-        'userRefresh' => '$refresh',
-    ];
-
-    /**
-     * The Page Name
-     */
-    protected string $pageName = 'users';
-
     /**
      * The Table Name
      */
@@ -59,12 +50,17 @@ class Datatables extends DataTableComponent
     public bool $hideBulkActionsOnEmpty = true;
 
     /**
-     * Setting show all in page options
+     * Setting for pagination name
+     */
+    protected string $pageName = 'page';
+
+    /**
+     * Setting show all in pagination options
      */
     public bool $perPageAll = true;
 
     /**
-     * Setting show per page options
+     * Setting show per pagination options
      */
     public array $perPageAccepted = [
         5,
@@ -75,9 +71,16 @@ class Datatables extends DataTableComponent
     ];
 
     /**
-     * Setting defaut data per page
+     * Setting defaut data pagination page
      */
     public int $perPage  = 5;
+
+    /**
+     * setting for number column
+     *
+     * @var int
+     */
+    public int $number = 1;
 
     /**
      * setting show action if row selected
@@ -127,6 +130,11 @@ class Datatables extends DataTableComponent
         ];
     }
 
+    public function setTableRowId($row): ?string
+    {
+        return $row->uuid;
+    }
+
     /**
      * List Of Table
      *
@@ -134,14 +142,20 @@ class Datatables extends DataTableComponent
      */
     public function columns(): array
     {
+        $this->number = ($this->page) ? (($this->page - 1) * $this->perPage) + 1 : 0;
+
         return [
+            Column::make('No.')
+                ->format(function () {
+                    return $this->number++;
+                }),
             Column::make('Name', 'name')
                 ->sortable()
                 ->searchable(),
-            Column::make('Role', 'roles')
+            Column::make('Role', 'role')
                 ->format(function ($value) {
                     $result = "<span class='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-jets-100 text-jets-800'> ";
-                    $result .= ($value->first()) ? ($value->first()->title) : null;
+                    $result .= ($value) ? ($value->title) : null;
                     $result .= "</span>";
                     return $result;
                 })->asHtml(),
@@ -178,7 +192,7 @@ class Datatables extends DataTableComponent
     public function query(): Builder
     {
         return User::query()
-            ->with(['roles'])
+            ->with(['role'])
             ->when($this->getFilter('verified'), function ($query, $verified) {
                 if ($verified === 'yes') {
                     return $query->whereNotNull('email_verified_at');
@@ -193,7 +207,7 @@ class Datatables extends DataTableComponent
                 return $query->where('email_verified_at', '<=', $date);
             })
             ->when($this->getFilter('roleFilter'), function ($query, $value) {
-                $query->whereHas('roles', function ($query) use ($value) {
+                $query->whereHas('role', function ($query) use ($value) {
                     $query->where('id', $value);
                 });
 

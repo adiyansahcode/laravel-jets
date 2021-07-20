@@ -12,11 +12,12 @@
         <span class="inline-flex">Create User</span>
       </button>
 
-      @if (session('message'))
-        <div class="py-2 px-2 text-jets-700 bg-jets-100 rounded-lg" role="alert">
-          <p class="">{{ session('message') }}</p>
-        </div>
-      @endif
+      <x-jet-action-message on="showMessage" role="alert" class="py-2 px-2 text-jets-700 bg-jets-100 rounded-lg">
+        @if (session('message'))
+          {{ session('message') }}
+        @endif
+      </x-jet-action-message>
+
     </div>
     @if($createModal)
       @include('livewire.users.create')

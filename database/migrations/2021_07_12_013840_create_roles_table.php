@@ -15,9 +15,31 @@ class CreateRolesTable extends Migration
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
+
             $table->string('title')->nullable();
+            $table->text('detail')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreignId('created_by')
+                ->nullable()
+                ->constrained('users')
+                ->onUpdate('CASCADE')
+                ->onDelete('RESTRICT');
+
+            $table->foreignId('updated_by')
+                ->nullable()
+                ->constrained('users')
+                ->onUpdate('CASCADE')
+                ->onDelete('RESTRICT');
+
+            $table->foreignId('deleted_by')
+                ->nullable()
+                ->constrained('users')
+                ->onUpdate('CASCADE')
+                ->onDelete('RESTRICT');
         });
     }
 
