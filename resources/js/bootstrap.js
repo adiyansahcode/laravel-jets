@@ -1,3 +1,7 @@
+import Alpine from 'alpinejs';
+window.Alpine = Alpine;
+Alpine.start();
+
 window._ = require('lodash');
 
 /**

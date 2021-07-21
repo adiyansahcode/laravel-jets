@@ -16,77 +16,50 @@
               {{ __('Dashboard') }}
           </x-jet-nav-link>
         </div>
-        @can('userAccess')
-            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                <x-jet-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')">
-                    Users
-                </x-jet-nav-link>
-            </div>
-        @endcan
-        @can('roleAccess')
-            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                <x-jet-nav-link href="#">
-                    Role
-                </x-jet-nav-link>
-            </div>
-        @endcan
-      </div>
 
-      <div class="hidden sm:flex sm:items-center sm:ml-6">
-        <!-- Teams Dropdown -->
-        @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
-        <div class="ml-3 relative">
-          <x-jet-dropdown align="right" width="60">
+        <!-- Users Management -->
+        <div class="hidden space-x-8 sm:-my-px sm:ml-6 sm:flex">
+          <x-jet-dropdown align="left" width="60">
             <x-slot name="trigger">
-              <span class="inline-flex rounded-md">
-                <button type="button"
-                  class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:bg-gray-50 hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition">
-                  {{ @Auth::user()->currentTeam->name }}
+              @php
+              $navClass = (request()->routeIs('users.*'))
+              ? 'inline-flex items-center px-1 pt-6 pb-5 border-b-2 border-jets-400 text-sm font-medium leading-5 text-gray-900 focus:outline-none focus:border-jets-700 transition'
+              : 'inline-flex items-center px-1 pt-6 pb-5 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition';
+              @endphp
+              <span class="{{ $navClass }}">
+                <button type="button">
+                  Users Management
 
-                  <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                    fill="currentColor">
-                    <path fill-rule="evenodd"
-                      d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                      clip-rule="evenodd" />
-                  </svg>
+                  <x-heroicon-o-chevron-up x-show="open" class="w-4 ml-1 inline-flex"/>
+                  <x-heroicon-o-chevron-down x-show="!open" class="w-4 ml-1 inline-flex" />
                 </button>
               </span>
             </x-slot>
 
             <x-slot name="content">
               <div class="w-60">
-                <!-- Team Management -->
                 <div class="block px-4 py-2 text-xs text-gray-400">
-                  {{ __('Manage Team') }}
+                  {{ __('Users Management') }}
                 </div>
 
-                <!-- Team Settings -->
-                <x-jet-dropdown-link href="{{ route('teams.show', @Auth::user()->currentTeam->id) }}">
-                  {{ __('Team Settings') }}
-                </x-jet-dropdown-link>
-
-                @can('create', Laravel\Jetstream\Jetstream::newTeamModel())
-                <x-jet-dropdown-link href="{{ route('teams.create') }}">
-                  {{ __('Create New Team') }}
-                </x-jet-dropdown-link>
+                @can('roleAccess')
+                  <x-jet-dropdown-link href="#">
+                    {{ __('Role') }}
+                  </x-jet-dropdown-link>
                 @endcan
 
-                <div class="border-t border-gray-100"></div>
-
-                <!-- Team Switcher -->
-                <div class="block px-4 py-2 text-xs text-gray-400">
-                  {{ __('Switch Teams') }}
-                </div>
-
-                @foreach (Auth::user()->allTeams() as $team)
-                <x-jet-switchable-team :team="$team" />
-                @endforeach
+                @can('userAccess')
+                  <x-jet-dropdown-link href="{{ route('users.index') }}">
+                    {{ __('Users') }}
+                  </x-jet-dropdown-link>
+                @endcan
               </div>
             </x-slot>
           </x-jet-dropdown>
         </div>
-        @endif
+      </div>
 
+      <div class="hidden sm:flex sm:items-center sm:ml-5">
         <!-- Settings Dropdown -->
         <div class="ml-3 relative">
           <x-jet-dropdown align="right" width="48">
@@ -167,6 +140,24 @@
       <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
         {{ __('Dashboard') }}
       </x-jet-responsive-nav-link>
+
+      <div class="border-t border-gray-200"></div>
+
+      <div class="block px-4 py-2 text-xs text-gray-400">
+        {{ __('Users Management') }}
+      </div>
+
+      @can('roleAccess')
+        <x-jet-responsive-nav-link href="#">
+          {{ __('Role') }}
+        </x-jet-responsive-nav-link>
+      @endcan
+
+      @can('userAccess')
+        <x-jet-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')">
+          {{ __('Users') }}
+        </x-jet-responsive-nav-link>
+      @endcan
     </div>
 
     <!-- Responsive Settings Options -->
@@ -207,38 +198,6 @@
             {{ __('Log Out') }}
           </x-jet-responsive-nav-link>
         </form>
-
-        <!-- Team Management -->
-        @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
-        <div class="border-t border-gray-200"></div>
-
-        <div class="block px-4 py-2 text-xs text-gray-400">
-          {{ __('Manage Team') }}
-        </div>
-
-        <!-- Team Settings -->
-        <x-jet-responsive-nav-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}"
-          :active="request()->routeIs('teams.show')">
-          {{ __('Team Settings') }}
-        </x-jet-responsive-nav-link>
-
-        @can('create', Laravel\Jetstream\Jetstream::newTeamModel())
-        <x-jet-responsive-nav-link href="{{ route('teams.create') }}" :active="request()->routeIs('teams.create')">
-          {{ __('Create New Team') }}
-        </x-jet-responsive-nav-link>
-        @endcan
-
-        <div class="border-t border-gray-200"></div>
-
-        <!-- Team Switcher -->
-        <div class="block px-4 py-2 text-xs text-gray-400">
-          {{ __('Switch Teams') }}
-        </div>
-
-        @foreach (Auth::user()->allTeams() as $team)
-        <x-jet-switchable-team :team="$team" component="jet-responsive-nav-link" />
-        @endforeach
-        @endif
       </div>
     </div>
   </div>

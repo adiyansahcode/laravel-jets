@@ -67,6 +67,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime:Y-m-d',
         'created_at' => 'datetime:Y-m-d',
         'updated_at' => 'datetime:Y-m-d',
+        'date_of_birth' => 'datetime:Y-m-d',
     ];
 
     /**
@@ -78,6 +79,7 @@ class User extends Authenticatable
         'email_verified_at',
         'created_at',
         'updated_at',
+        'date_of_birth',
     ];
 
     /**

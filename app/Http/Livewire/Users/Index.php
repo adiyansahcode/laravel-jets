@@ -28,13 +28,13 @@ class Index extends Component
      *
      */
     public $dataId;
+    public $profilePhotoUrl;
     public $name;
     public $phone;
     public $email;
     public $password;
     public $dateOfBirth;
     public $address;
-    public $roleId;
     public $role;
 
     /**
@@ -42,10 +42,17 @@ class Index extends Component
      */
     public bool $createModal = false;
     public bool $updateModal = false;
+    public bool $detailModal = false;
 
+    /**
+     * listen event
+     *
+     * @var array
+     */
     protected $listeners = [
-        'userEdit' => 'edit',
+        'userUpdate' => 'edit',
         'userDelete' => 'delete',
+        'userDetail' => 'show',
     ];
 
     public function mount()
@@ -83,6 +90,16 @@ class Index extends Component
     }
 
     /**
+     * Open the modal
+     *
+     * @var array
+     */
+    public function openDetailModal()
+    {
+        $this->detailModal = true;
+    }
+
+    /**
      * Close the modal
      *
      * @var array
@@ -91,6 +108,7 @@ class Index extends Component
     {
         $this->createModal = false;
         $this->updateModal = false;
+        $this->detailModal = false;
     }
 
     private function resetInputFields()
@@ -183,7 +201,6 @@ class Index extends Component
         $this->dataId = $data->id;
         $this->name = $data->name;
         $this->email = $data->email;
-        $this->roleId = ($data->role) ? ($data->role->id) : null;
         $this->role = ($data->role) ? ($data->role->id) : null;
 
         $this->openUpdateModal();
@@ -232,6 +249,31 @@ class Index extends Component
 
         $this->emit('showMessage');
         $this->emit('refreshDatatable');
+    }
+
+    /**
+     * Open the modal when edit
+     *
+     * @var array
+     */
+    public function show($id)
+    {
+        abort_if(Gate::denies('userDetail'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $this->resetValidation();
+        $this->resetInputFields();
+
+        $data = User::findOrFail($id);
+        $this->dataId = $data->id;
+        $this->profilePhotoUrl = $data->profile_photo_url;
+        $this->name = $data->name;
+        $this->email = $data->email;
+        $this->phone = $data->phone;
+        $this->dateOfBirth = $data->date_of_birth;
+        $this->address = $data->address;
+        $this->role = ($data->role) ? ($data->role->title) : null;
+
+        $this->openDetailModal();
     }
 
     public function delete($id)

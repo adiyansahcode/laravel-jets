@@ -13,13 +13,15 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "itsgoingd/clockwork": "^5.0",
         "laravel/framework": "^8.40",
         "laravel/jetstream": "^2.3",
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.5",
         "livewire/livewire": "^2.0",
         "owenvoke/blade-fontawesome": "^1.9",
-        "rappasoft/laravel-livewire-tables": "^1.11"
+        "rappasoft/laravel-livewire-tables": "^1.11",
+        "renatomarinho/laravel-page-speed": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",
@@ -51,6 +53,7 @@
             "@php artisan view:cache",
             "@php artisan icons:clear",
             "@php artisan icons:cache",
+            "@php artisan clockwork:clean",
             "@php artisan ide-helper:generate",
             "@php artisan ide-helper:meta",
             "@php artisan ide-helper:models --nowrite",

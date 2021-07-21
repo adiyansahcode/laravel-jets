@@ -167,11 +167,6 @@ class Datatables extends DataTableComponent
                 ->format(function ($value) {
                     return ($value) ? (new Carbon($value))->isoFormat('D MMMM YYYY') : null;
                 }),
-            Column::make('Created At', 'created_at')
-                ->sortable()
-                ->format(function ($value) {
-                    return ($value) ? (new Carbon($value))->isoFormat('D MMMM YYYY') : null;
-                }),
             Column::make('Updated At', 'updated_at')
                 ->sortable()
                 ->format(function ($value) {
@@ -229,27 +224,5 @@ class Datatables extends DataTableComponent
         $this->selected = [];
 
         $this->resetBulk();
-    }
-
-    /**
-     * edit
-     *
-     * @param int $id
-     * @return void
-     */
-    public function edit(int $id): void
-    {
-        $this->emit('userEdit', $id);
-    }
-
-    /**
-     * edit
-     *
-     * @param int $id
-     * @return void
-     */
-    public function delete(int $id): void
-    {
-        $this->emit('userDelete', $id);
     }
 }
