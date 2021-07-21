@@ -10,16 +10,17 @@ use App\Models\Role;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 
 class Index extends Component
 {
     /**
      * title page
      */
-    public string $title;
+    public string $title = 'Users List';
 
     /**
-     * user role
+     * list role
      */
     public array $roles;
 
@@ -27,15 +28,16 @@ class Index extends Component
      * form variable
      *
      */
-    public $dataId;
-    public $profilePhotoUrl;
-    public $name;
-    public $phone;
-    public $email;
-    public $password;
-    public $dateOfBirth;
-    public $address;
-    public $role;
+    public int $dataId = 0;
+    public ?string $profilePhotoUrl = '';
+    public ?string $name = '';
+    public ?string $phone = '';
+    public ?string $email = '';
+    public ?string $password = '';
+    public ?string $dateOfBirth = '';
+    public ?string $address = '';
+    public int $roleId = 0;
+    public ?string $roleTitle = '';
 
     /**
      * modal status
@@ -50,6 +52,7 @@ class Index extends Component
      * @var array
      */
     protected $listeners = [
+        'userCreate' => 'create',
         'userUpdate' => 'edit',
         'userDelete' => 'delete',
         'userDetail' => 'show',
@@ -57,7 +60,6 @@ class Index extends Component
 
     public function mount()
     {
-        $this->title = 'Users List';
         $this->roles = Role::pluck('title', 'id')->toArray();
     }
 
@@ -113,10 +115,36 @@ class Index extends Component
 
     private function resetInputFields()
     {
-        $this->name = '';
-        $this->email = '';
-        $this->password = '';
-        $this->role = '';
+        $this->reset([
+            'dataId',
+            'profilePhotoUrl',
+            'name',
+            'phone',
+            'email',
+            'password',
+            'dateOfBirth',
+            'address',
+            'roleId',
+            'roleTitle',
+        ]);
+
+        // These two methods do the same thing, they clear the error bag.
+        $this->resetErrorBag();
+        $this->resetValidation();
+    }
+
+    private function setInputFields(int $id): void
+    {
+        $data = User::findOrFail($id);
+        $this->dataId = $data->id;
+        $this->profilePhotoUrl = $data->profile_photo_url;
+        $this->name = $data->name;
+        $this->email = $data->email;
+        $this->phone = $data->phone;
+        $this->dateOfBirth = ($data->date_of_birth) ? (new Carbon($data->date_of_birth))->isoFormat('YYYY-MM-DD') : null;
+        $this->address = $data->address;
+        $this->roleId = ($data->role) ? ($data->role->id) : null;
+        $this->roleTitle = ($data->role) ? ($data->role->title) : null;
     }
 
     /**
@@ -128,7 +156,6 @@ class Index extends Component
     {
         abort_if(Gate::denies('userCreate'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $this->resetValidation();
         $this->resetInputFields();
         $this->openCreateModal();
     }
@@ -144,8 +171,9 @@ class Index extends Component
 
         $this->validate([
             'name' => [
-                'string',
                 'required',
+                'string',
+                'max:100',
             ],
             'email'    => [
                 'required',
@@ -153,6 +181,25 @@ class Index extends Component
                 Rule::unique('App\Models\User', 'email')->where(function ($query) {
                     return $query->whereNull('deleted_at');
                 }),
+                'max:100',
+            ],
+            'phone' => [
+                'required',
+                'numeric',
+                Rule::unique('App\Models\User', 'phone')->where(function ($query) {
+                    return $query->whereNull('deleted_at');
+                }),
+                'digits_between:1,20',
+            ],
+            'dateOfBirth' => [
+                'present',
+                'date',
+                'date_format:Y-m-d',
+            ],
+            'address' => [
+                'present',
+                'string',
+                'max:200',
             ],
             'password' => [
                 'required',
@@ -160,7 +207,7 @@ class Index extends Component
                 'min:5',
                 'max:10',
             ],
-            'role' => [
+            'roleId' => [
                 'required',
                 'integer',
                 Rule::in(Role::all()->pluck('id')),
@@ -170,13 +217,16 @@ class Index extends Component
         $user = new User();
         $user->name = $this->name;
         $user->email = $this->email;
+        $user->phone = $this->phone;
+        $user->date_of_birth = ($this->dateOfBirth) ? (new Carbon($this->dateOfBirth))->isoFormat('YYYY-MM-DD') : null;
+        $user->address = $this->address;
         $user->password = app('hash')->make($this->password);
 
-        $user->role()->associate($this->role);
+        $user->role()->associate($this->roleId);
 
         $user->save();
 
-        session()->flash('message', 'User Created Successfully.');
+        session()->flash('message', $this->dateOfBirth);
 
         $this->closeModal();
         $this->resetInputFields();
@@ -188,21 +238,15 @@ class Index extends Component
     /**
      * Open the modal when edit
      *
-     * @var array
+     * @param int $id
+     * @return void
      */
-    public function edit($id)
+    public function edit(int $id): void
     {
         abort_if(Gate::denies('userUpdate'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $this->resetValidation();
         $this->resetInputFields();
-
-        $data = User::findOrFail($id);
-        $this->dataId = $data->id;
-        $this->name = $data->name;
-        $this->email = $data->email;
-        $this->role = ($data->role) ? ($data->role->id) : null;
-
+        $this->setInputFields($id);
         $this->openUpdateModal();
     }
 
@@ -227,7 +271,25 @@ class Index extends Component
                     return $query->whereNull('deleted_at');
                 }),
             ],
-            'role' => [
+            'phone'    => [
+                'required',
+                'numeric',
+                Rule::unique('App\Models\User', 'phone')->ignore($this->dataId)->where(function ($query) {
+                    return $query->whereNull('deleted_at');
+                }),
+                'digits_between:1,20',
+            ],
+            'dateOfBirth' => [
+                'present',
+                'date',
+                'date_format:Y-m-d',
+            ],
+            'address' => [
+                'present',
+                'string',
+                'max:200',
+            ],
+            'roleId' => [
                 'required',
                 'integer',
                 Rule::in(Role::all()->pluck('id')),
@@ -237,8 +299,11 @@ class Index extends Component
         $user = User::find($this->dataId);
         $user->name = $this->name;
         $user->email = $this->email;
+        $user->phone = $this->phone;
+        $user->date_of_birth = ($this->dateOfBirth) ? (new Carbon($this->dateOfBirth))->isoFormat('YYYY-MM-DD') : null;
+        $user->address = $this->address;
 
-        $user->role()->associate($this->role);
+        $user->role()->associate($this->roleId);
 
         $user->save();
 
@@ -252,27 +317,17 @@ class Index extends Component
     }
 
     /**
-     * Open the modal when edit
+     * open detail user
      *
-     * @var array
+     * @param int $id
+     * @return void
      */
-    public function show($id)
+    public function show(int $id): void
     {
         abort_if(Gate::denies('userDetail'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $this->resetValidation();
         $this->resetInputFields();
-
-        $data = User::findOrFail($id);
-        $this->dataId = $data->id;
-        $this->profilePhotoUrl = $data->profile_photo_url;
-        $this->name = $data->name;
-        $this->email = $data->email;
-        $this->phone = $data->phone;
-        $this->dateOfBirth = $data->date_of_birth;
-        $this->address = $data->address;
-        $this->role = ($data->role) ? ($data->role->title) : null;
-
+        $this->setInputFields($id);
         $this->openDetailModal();
     }
 

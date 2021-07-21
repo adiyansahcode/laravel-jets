@@ -1,4 +1,6 @@
 import Alpine from 'alpinejs';
+import Pikaday from 'pikaday';
+
 window.Alpine = Alpine;
 Alpine.start();
 
@@ -30,3 +32,5 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+
+window.Pikaday = Pikaday;

@@ -30,20 +30,62 @@
     </div>
 
     <div class="mt-4">
+      <x-jet-label for="phone" value="{{ __('Phone Number') }}" />
+      @php
+      $borderColor = $errors->has('phone')
+      ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+      : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+      @endphp
+      <x-input id="phone" name="phone" wire:model.defer="phone"
+        class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
+      <x-error field="phone" class="mt-1 font-medium text-sm text-red-600" />
+    </div>
+
+    <div class="mt-4">
+      <x-jet-label for="dateOfBirth" value="{{ __('Date Of Birth') }}" />
+      @php
+      $borderColor = $errors->has('dateOfBirth')
+      ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+      : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+      @endphp
+      <x-pikaday id="dateOfBirth" name="dateOfBirth" format="YYYY-MM-DD"
+        wire:model.defer="dateOfBirth"
+        x-on:change="$wire.set('dateOfBirth', $event.target.value)"
+        :options="[
+          'firstDay' => 0,
+          'yearRange' => [1970,2030],
+        ]"
+        class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
+      <x-error field="dateOfBirth" class="mt-1 font-medium text-sm text-red-600" />
+    </div>
+
+    <div class="mt-4">
       <x-jet-label for="Role" value="{{ __('Role') }}" />
       @php
       $borderColor = $errors->has('password_confirmation')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
       : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
       @endphp
-      <select name="role" id="role" wire:model.defer="role"
+      <select name="roleId" id="roleId" wire:model.defer="roleId"
         class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}">
-        <option value='' selected="true" disabled="disabled">--choose data--</option>
-        @foreach($roles as $roleId => $roleTitle)
-          <option value="{{ $roleId }}" {{ ($roleId === $role) ? 'selected' : '' }}>{{ $roleTitle }}</option>
+        <option value='0' selected="true" disabled="disabled">--choose data--</option>
+        @foreach($roles as $rolesId => $rolesTitle)
+          <option value="{{ $rolesId }}" {{ ($rolesId === $roleId) ? 'selected' : '' }}>{{ $rolesTitle }}</option>
         @endforeach
       </select>
       <x-error field="role" class="mt-1 font-medium text-sm text-red-600" />
+    </div>
+
+    <div class="mt-4">
+      <x-jet-label for="address" value="{{ __('Address') }}" />
+      @php
+      $borderColor = $errors->has('address')
+      ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+      : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+      @endphp
+      <x-textarea id="address" name="address" wire:model.defer="address"
+        class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
+      <x-error field="address" class="mt-1 font-medium text-sm text-red-600" />
     </div>
   </x-slot>
 

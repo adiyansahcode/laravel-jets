@@ -159,19 +159,30 @@ class Datatables extends DataTableComponent
                     $result .= "</span>";
                     return $result;
                 })->asHtml(),
-            Column::make('Email', 'email')
+            Column::make('Email')
+                ->sortable(function (Builder $query, $direction) {
+                    return $query->orderBy('email', $direction);
+                })
+                ->searchable()
+                ->format(function ($value, $column, $row) {
+                    $emailVerifiedAt = ($row->email_verified_at) ? (new Carbon($row->email_verified_at))->isoFormat('D MMMM YYYY') : null;
+                    $result = "<div class='text-sm text-gray-900'> " . $row->email . "</div>";
+                    $result .= "<div class='text-sm text-gray-500'> Verified At: " . $emailVerifiedAt . "</div>";
+                    return $result;
+                })->asHtml(),
+            Column::make('Phone', 'phone')
                 ->sortable()
                 ->searchable(),
-            Column::make('Verified At', 'email_verified_at')
-                ->sortable()
-                ->format(function ($value) {
-                    return ($value) ? (new Carbon($value))->isoFormat('D MMMM YYYY') : null;
-                }),
-            Column::make('Updated At', 'updated_at')
-                ->sortable()
-                ->format(function ($value) {
-                    return ($value) ? (new Carbon($value))->isoFormat('D MMMM YYYY') : null;
-                }),
+            Column::make('Last Updated')
+                ->sortable(function (Builder $query, $direction) {
+                    return $query->orderBy('updated_at', $direction);
+                })
+                ->format(function ($value, $column, $row) {
+                    $updatedAt = ($row->updated_at) ? (new Carbon($row->updated_at))->isoFormat('D MMMM YYYY') : null;
+                    $result = "<div class='text-sm text-gray-900'> At: " . $updatedAt . "</div>";
+                    $result .= "<div class='text-sm text-gray-500'> By: " . $row->updatedBy->name . "</div>";
+                    return $result;
+                })->asHtml(),
             Column::make('Actions')
                 ->format(function ($value, $column, $row) {
                     return view('livewire.users.action')->with('row', $row);
@@ -187,7 +198,7 @@ class Datatables extends DataTableComponent
     public function query(): Builder
     {
         return User::query()
-            ->with(['role'])
+            ->with(['role','updatedBy'])
             ->when($this->getFilter('verified'), function ($query, $verified) {
                 if ($verified === 'yes') {
                     return $query->whereNotNull('email_verified_at');
