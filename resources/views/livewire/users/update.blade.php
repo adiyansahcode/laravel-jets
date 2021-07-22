@@ -1,12 +1,12 @@
 @if($updateModal)
 <x-jet-dialog-modal wire:model="updateModal" maxWidth="lg">
   <x-slot name="title">
-    {{ __('Users Edit Form') }}
+    Users Edit Form
   </x-slot>
 
   <x-slot name="content">
     <div>
-      <x-jet-label for="name" value="{{ __('Name') }}" />
+      <x-jet-label for="name" value="name" class="capitalize" />
       @php
       $borderColor = $errors->has('name')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -18,7 +18,7 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="email" value="{{ __('Email') }}" />
+      <x-jet-label for="email" value="email" class="capitalize" />
       @php
       $borderColor = $errors->has('email')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -30,7 +30,7 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="phone" value="{{ __('Phone Number') }}" />
+      <x-jet-label for="phone" value="phone number" class="capitalize" />
       @php
       $borderColor = $errors->has('phone')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -42,7 +42,7 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="dateOfBirth" value="{{ __('Date Of Birth') }}" />
+      <x-jet-label for="dateOfBirth" value="date of birth" class="capitalize" />
       @php
       $borderColor = $errors->has('dateOfBirth')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -60,7 +60,7 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="Role" value="{{ __('Role') }}" />
+      <x-jet-label for="Role" value="role" class="capitalize" />
       @php
       $borderColor = $errors->has('password_confirmation')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -77,7 +77,7 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="address" value="{{ __('Address') }}" />
+      <x-jet-label for="address" value="address" class="capitalize" />
       @php
       $borderColor = $errors->has('address')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'

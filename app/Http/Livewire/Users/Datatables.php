@@ -11,9 +11,21 @@ use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Filter;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Arr;
+use Symfony\Component\HttpFoundation\Response;
 
 class Datatables extends DataTableComponent
 {
+    /**
+     * listen event.
+     *
+     * @var array
+     */
+    protected $listeners = [
+        'resetSelected' => 'resetSelected',
+    ];
+
     /**
      * The Table Name
      */
@@ -85,9 +97,7 @@ class Datatables extends DataTableComponent
     /**
      * setting show action if row selected
      */
-    public array $bulkActions = [
-        'deleteSelected'   => 'Delete',
-    ];
+    public array $bulkActions = [];
 
     /**
      * filters default values
@@ -130,9 +140,31 @@ class Datatables extends DataTableComponent
         ];
     }
 
-    public function setTableRowId($row): ?string
+    /**
+     * set table row id
+     *
+     * @param [type] $row
+     * @return string|null
+     */
+    public function setTableRowId($row): string
     {
         return $row->uuid;
+    }
+
+    /**
+     * mount variable
+     *
+     * @return void
+     */
+    public function mount(): void
+    {
+        $action = [];
+
+        if (Gate::allows('userDelete')) {
+            $action = Arr::add($action, 'deleteSelected', 'Delete');
+        }
+
+        $this->bulkActions = $action;
     }
 
     /**
@@ -228,12 +260,12 @@ class Datatables extends DataTableComponent
      */
     public function deleteSelected(): void
     {
-        if ($this->selectedRowsQuery->count() > 0) {
-            User::whereIn('id', $this->selectedKeys())->delete();
-        }
+        $this->emit('userMultipleDelete', $this->selectedKeys());
+    }
 
-        $this->selected = [];
-
-        $this->resetBulk();
+    public function resetSelected(): void
+    {
+        $this->resetBulk(); // Clear the selected rows
+        $this->resetPage(); // Go back to page 1
     }
 }

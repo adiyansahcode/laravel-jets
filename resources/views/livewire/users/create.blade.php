@@ -1,12 +1,12 @@
 @if($createModal)
 <x-jet-dialog-modal wire:model="createModal" maxWidth="lg">
   <x-slot name="title">
-    {{ __('Users Create Form') }}
+    Users Create Form
   </x-slot>
 
   <x-slot name="content">
     <div>
-      <x-jet-label for="name" value="{{ __('Name') }}" />
+      <x-jet-label for="name" value="Name" class="capitalize" />
       @php
       $borderColor = $errors->has('name')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -18,7 +18,7 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="email" value="{{ __('Email') }}" />
+      <x-jet-label for="email" value="Email" class="capitalize" />
       @php
       $borderColor = $errors->has('email')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -30,7 +30,7 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="phone" value="{{ __('Phone Number') }}" />
+      <x-jet-label for="phone" value="Phone Number" class="capitalize" />
       @php
       $borderColor = $errors->has('phone')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -42,25 +42,22 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="dateOfBirth" value="{{ __('Date Of Birth') }}" />
+      <x-jet-label for="dateOfBirth" value="Date Of Birth" class="capitalize" />
       @php
       $borderColor = $errors->has('dateOfBirth')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
       : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
       @endphp
-      <x-pikaday id="dateOfBirth" name="dateOfBirth" format="YYYY-MM-DD"
-        wire:model.defer="dateOfBirth"
-        x-on:change="$wire.set('dateOfBirth', $event.target.value)"
-        :options="[
+      <x-pikaday id="dateOfBirth" name="dateOfBirth" format="YYYY-MM-DD" wire:model.defer="dateOfBirth"
+        x-on:change="$wire.set('dateOfBirth', $event.target.value)" :options="[
           'firstDay' => 0,
           'yearRange' => [1970,2030],
-        ]"
-        class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
+        ]" class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
       <x-error field="dateOfBirth" class="mt-1 font-medium text-sm text-red-600" />
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="password" value="{{ __('Password') }}" />
+      <x-jet-label for="password" value="Password" class="capitalize" />
       @php
       $borderColor = $errors->has('password')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -72,13 +69,14 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="roleId" value="{{ __('Role') }}" />
+      <x-jet-label for="roleId" value="Role" class="capitalize" />
       @php
       $borderColor = $errors->has('password_confirmation')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
       : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
       @endphp
-      <select name="roleId" id="roleId" wire:model.defer="roleId" class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}">
+      <select name="roleId" id="roleId" wire:model.defer="roleId"
+        class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}">
         <option value='0' selected="true" disabled="disabled">--choose data--</option>
         @foreach($roles as $rolesId => $rolesTitle)
         <option value="{{ $rolesId }}">{{ $rolesTitle }}</option>
@@ -88,7 +86,7 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="address" value="{{ __('Address') }}" />
+      <x-jet-label for="address" value="Address" class="capitalize" />
       @php
       $borderColor = $errors->has('address')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'

@@ -4,66 +4,92 @@ declare(strict_types=1);
 
 namespace App\Http\Livewire\Users;
 
-use Livewire\Component;
-use App\Models\User;
 use App\Models\Role;
-use Illuminate\Support\Facades\Gate;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Validation\Rule;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
+use Livewire\Component;
+use Symfony\Component\HttpFoundation\Response;
 
 class Index extends Component
 {
     /**
-     * title page
+     * title page.
      */
     public string $title = 'Users List';
 
     /**
-     * list role
+     * list role.
      */
     public array $roles;
 
     /**
-     * form variable
-     *
+     * form variable.
      */
     public int $dataId = 0;
-    public ?string $profilePhotoUrl = '';
-    public ?string $name = '';
-    public ?string $phone = '';
-    public ?string $email = '';
-    public ?string $password = '';
-    public ?string $dateOfBirth = '';
-    public ?string $address = '';
+
+    public array $dataIds = [];
+
+    public ?string $profilePhotoUrl = null;
+
+    public ?string $name = null;
+
+    public ?string $phone = null;
+
+    public ?string $email = null;
+
+    public ?string $password = null;
+
+    public ?string $dateOfBirth = null;
+
+    public ?string $address = null;
+
     public int $roleId = 0;
-    public ?string $roleTitle = '';
+
+    public ?string $roleTitle = null;
 
     /**
-     * modal status
+     * modal status.
      */
     public bool $createModal = false;
+
     public bool $updateModal = false;
+
     public bool $detailModal = false;
 
+    public bool $deleteModal = false;
+
     /**
-     * listen event
+     * listen event.
      *
      * @var array
      */
     protected $listeners = [
         'userCreate' => 'create',
         'userUpdate' => 'edit',
-        'userDelete' => 'delete',
         'userDetail' => 'show',
+        'userDelete' => 'deleteConfirm',
+        'userMultipleDelete' => 'multipleDeleteConfirm',
     ];
 
-    public function mount()
+    /**
+     * mount variable.
+     *
+     * @return void
+     */
+    public function mount(): void
     {
         $this->roles = Role::pluck('title', 'id')->toArray();
     }
 
-    public function render()
+    /**
+     * render view page.
+     *
+     * @return View
+     */
+    public function render(): View
     {
         abort_if(Gate::denies('userAccess'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
@@ -72,51 +98,15 @@ class Index extends Component
     }
 
     /**
-     * Open the modal
+     * reset input fields.
      *
-     * @var array
+     * @return void
      */
-    public function openCreateModal()
-    {
-        $this->createModal = true;
-    }
-
-    /**
-     * Open the modal
-     *
-     * @var array
-     */
-    public function openUpdateModal()
-    {
-        $this->updateModal = true;
-    }
-
-    /**
-     * Open the modal
-     *
-     * @var array
-     */
-    public function openDetailModal()
-    {
-        $this->detailModal = true;
-    }
-
-    /**
-     * Close the modal
-     *
-     * @var array
-     */
-    public function closeModal()
-    {
-        $this->createModal = false;
-        $this->updateModal = false;
-        $this->detailModal = false;
-    }
-
-    private function resetInputFields()
+    private function resetInputFields(): void
     {
         $this->reset([
             'dataId',
+            'dataIds',
             'profilePhotoUrl',
             'name',
             'phone',
@@ -133,6 +123,12 @@ class Index extends Component
         $this->resetValidation();
     }
 
+    /**
+     * set input fields.
+     *
+     * @param int $id
+     * @return void
+     */
     private function setInputFields(int $id): void
     {
         $data = User::findOrFail($id);
@@ -148,7 +144,7 @@ class Index extends Component
     }
 
     /**
-     * Open the modal when create
+     * Open the modal when create.
      *
      * @var array
      */
@@ -157,11 +153,12 @@ class Index extends Component
         abort_if(Gate::denies('userCreate'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $this->resetInputFields();
-        $this->openCreateModal();
+
+        $this->createModal = true;
     }
 
     /**
-     * Validate then Insert data
+     * Validate then Insert data.
      *
      * @return void
      */
@@ -228,7 +225,7 @@ class Index extends Component
 
         session()->flash('message', $this->dateOfBirth);
 
-        $this->closeModal();
+        $this->createModal = false;
         $this->resetInputFields();
 
         $this->emit('showMessage');
@@ -236,7 +233,7 @@ class Index extends Component
     }
 
     /**
-     * Open the modal when edit
+     * Open the modal when edit.
      *
      * @param int $id
      * @return void
@@ -247,15 +244,16 @@ class Index extends Component
 
         $this->resetInputFields();
         $this->setInputFields($id);
-        $this->openUpdateModal();
+
+        $this->updateModal = true;
     }
 
     /**
-     * Validate then Update data
+     * Validate then Update data.
      *
      * @return void
      */
-    public function update()
+    public function update(): void
     {
         abort_if(Gate::denies('userUpdate'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
@@ -309,7 +307,7 @@ class Index extends Component
 
         session()->flash('message', 'User Updated Successfully.');
 
-        $this->closeModal();
+        $this->updateModal = false;
         $this->resetInputFields();
 
         $this->emit('showMessage');
@@ -317,7 +315,7 @@ class Index extends Component
     }
 
     /**
-     * open detail user
+     * open detail user.
      *
      * @param int $id
      * @return void
@@ -328,18 +326,63 @@ class Index extends Component
 
         $this->resetInputFields();
         $this->setInputFields($id);
-        $this->openDetailModal();
+
+        $this->detailModal = true;
     }
 
-    public function delete($id)
+    /**
+     * open confirm message when delete.
+     *
+     * @param int $id
+     * @return void
+     */
+    public function deleteConfirm(int $id): void
     {
         abort_if(Gate::denies('userDelete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        User::find($id)->delete();
+        $this->resetInputFields();
+        $this->setInputFields($id);
+
+        $this->deleteModal = true;
+    }
+
+    /**
+     * open confirm message when delete.
+     *
+     * @param array $id
+     * @return void
+     */
+    public function multipleDeleteConfirm(array $id): void
+    {
+        abort_if(Gate::denies('userDelete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $this->dataIds = $id;
+        $this->deleteModal = true;
+    }
+
+    /**
+     * delete user.
+     *
+     * @return void
+     */
+    public function delete(): void
+    {
+        abort_if(Gate::denies('userDelete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        if (!empty($this->dataIds)) {
+            User::whereIn('id', $this->dataIds)->delete();
+        }
+
+        if (!empty($this->dataId)) {
+            User::find($this->dataId)->delete();
+        }
 
         session()->flash('message', 'User Deleted Successfully.');
 
+        $this->deleteModal = false;
+        $this->resetInputFields();
+
         $this->emit('showMessage');
         $this->emit('refreshDatatable');
+        $this->emit('resetSelected');
     }
 }

@@ -1,7 +1,7 @@
 @if($detailModal)
 <x-jet-dialog-modal wire:model="detailModal" maxWidth="sm">
   <x-slot name="title">
-    {{ __('Users Detail') }}
+    Users Detail
   </x-slot>
 
   <x-slot name="content">
@@ -17,19 +17,19 @@
         <table class="text-xs my-3">
           <tbody>
             <tr>
-              <td class="px-2 py-2 text-gray-500 font-semibold">Email</td>
+              <td class="px-2 py-2 text-gray-500 font-semibold capitalize">Email</td>
               <td class="px-2 py-2">{{ $email }}</td>
             </tr>
             <tr>
-              <td class="px-2 py-2 text-gray-500 font-semibold">Phone</td>
+              <td class="px-2 py-2 text-gray-500 font-semibold capitalize">Phone Number</td>
               <td class="px-2 py-2">{{ $phone }}</td>
             </tr>
             <tr>
-              <td class="px-2 py-2 text-gray-500 font-semibold">Address</td>
+              <td class="px-2 py-2 text-gray-500 font-semibold capitalize">Address</td>
               <td class="px-2 py-2">{{ $address }}</td>
             </tr>
             <tr>
-              <td class="px-2 py-2 text-gray-500 font-semibold">Date Of Birth</td>
+              <td class="px-2 py-2 text-gray-500 font-semibold capitalize">Date Of Birth</td>
               <td class="px-2 py-2">{{ $dateOfBirth }}</td>
             </tr>
           </tbody>
