@@ -36,6 +36,8 @@ class Index extends Component
 
     public ?string $name = null;
 
+    public ?string $username = null;
+
     public ?string $phone = null;
 
     public ?string $email = null;
@@ -109,6 +111,7 @@ class Index extends Component
             'dataIds',
             'profilePhotoUrl',
             'name',
+            'username',
             'phone',
             'email',
             'password',
@@ -135,6 +138,7 @@ class Index extends Component
         $this->dataId = $data->id;
         $this->profilePhotoUrl = $data->profile_photo_url;
         $this->name = $data->name;
+        $this->username = $data->username;
         $this->email = $data->email;
         $this->phone = $data->phone;
         $this->dateOfBirth = ($data->date_of_birth) ? (new Carbon($data->date_of_birth))->isoFormat('YYYY-MM-DD') : null;
@@ -172,7 +176,16 @@ class Index extends Component
                 'string',
                 'max:100',
             ],
-            'email'    => [
+            'username' => [
+                'required',
+                'string',
+                'alpha_dash',
+                Rule::unique('App\Models\User', 'username')->where(function ($query) {
+                    return $query->whereNull('deleted_at');
+                }),
+                'max:100',
+            ],
+            'email' => [
                 'required',
                 'email:rfc,dns',
                 Rule::unique('App\Models\User', 'email')->where(function ($query) {
@@ -213,6 +226,7 @@ class Index extends Component
 
         $user = new User();
         $user->name = $this->name;
+        $user->username = $this->username;
         $user->email = $this->email;
         $user->phone = $this->phone;
         $user->date_of_birth = ($this->dateOfBirth) ? (new Carbon($this->dateOfBirth))->isoFormat('YYYY-MM-DD') : null;
@@ -259,15 +273,26 @@ class Index extends Component
 
         $this->validate([
             'name' => [
-                'string',
                 'required',
+                'string',
+            ],
+            'username' => [
+                'required',
+                'string',
+                'alpha_dash',
+                Rule::unique('App\Models\User', 'username')->ignore($this->dataId)->where(function ($query) {
+                    return $query->whereNull('deleted_at');
+                }),
+                'max:100',
             ],
             'email'    => [
                 'required',
+                'string',
                 'email:rfc,dns',
                 Rule::unique('App\Models\User', 'email')->ignore($this->dataId)->where(function ($query) {
                     return $query->whereNull('deleted_at');
                 }),
+                'max:100',
             ],
             'phone'    => [
                 'required',
@@ -296,6 +321,7 @@ class Index extends Component
 
         $user = User::find($this->dataId);
         $user->name = $this->name;
+        $user->username = $this->username;
         $user->email = $this->email;
         $user->phone = $this->phone;
         $user->date_of_birth = ($this->dateOfBirth) ? (new Carbon($this->dateOfBirth))->isoFormat('YYYY-MM-DD') : null;

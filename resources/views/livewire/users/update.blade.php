@@ -18,6 +18,18 @@
     </div>
 
     <div class="mt-4">
+      <x-jet-label for="username" value="username" class="capitalize" />
+      @php
+      $borderColor = $errors->has('username')
+      ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+      : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+      @endphp
+      <x-input id="username" name="username" wire:model.defer="username"
+        class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
+      <x-error field="username" class="mt-1 font-medium text-sm text-red-600" />
+    </div>
+
+    <div class="mt-4">
       <x-jet-label for="email" value="email" class="capitalize" />
       @php
       $borderColor = $errors->has('email')

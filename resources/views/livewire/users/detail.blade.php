@@ -17,6 +17,10 @@
         <table class="text-xs my-3">
           <tbody>
             <tr>
+              <td class="px-2 py-2 text-gray-500 font-semibold capitalize">Username</td>
+              <td class="px-2 py-2">{{ $username }}</td>
+            </tr>
+            <tr>
               <td class="px-2 py-2 text-gray-500 font-semibold capitalize">Email</td>
               <td class="px-2 py-2">{{ $email }}</td>
             </tr>

@@ -38,11 +38,14 @@ class User extends Authenticatable
     protected $fillable = [
         'uuid',
         'name',
+        'username',
         'phone',
         'email',
+        'email_verified_at',
         'password',
         'date_of_birth',
         'address',
+        'is_active',
     ];
 
     /**

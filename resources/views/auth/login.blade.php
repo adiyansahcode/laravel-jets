@@ -12,17 +12,17 @@
 
     <x-form id="form-login" action="{{ route('login') }}" novalidate autocomplete="off">
 
-      <!-- email -->
+      <!-- username -->
       <div>
-        <x-jet-label for="email" value="{{ __('Email') }}" />
+        <x-jet-label for="username" value="{{ __('Username') }}" />
         @php
-        $borderColor = $errors->has('email')
+        $borderColor = $errors->has('username')
         ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
         : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
         @endphp
-        <x-input id="email" name="email" type="email" required autofocus
+        <x-input id="username" name="username" required autofocus
           class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
-        <x-error field="email" class="relative py-3 px-3 leading-normal text-red-700 bg-red-100 rounded-lg" />
+        <x-error field="username" class="relative py-3 px-3 leading-normal text-red-700 bg-red-100 rounded-lg" />
       </div>
 
       <!-- password -->

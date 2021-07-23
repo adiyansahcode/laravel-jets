@@ -6,7 +6,7 @@
 
   <x-slot name="content">
     <div>
-      <x-jet-label for="name" value="Name" class="capitalize" />
+      <x-jet-label for="name" value="fullname" class="capitalize" />
       @php
       $borderColor = $errors->has('name')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -18,7 +18,19 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="email" value="Email" class="capitalize" />
+      <x-jet-label for="username" value="username" class="capitalize" />
+      @php
+      $borderColor = $errors->has('username')
+      ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+      : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+      @endphp
+      <x-input id="username" name="username" wire:model.defer="username"
+        class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
+      <x-error field="username" class="mt-1 font-medium text-sm text-red-600" />
+    </div>
+
+    <div class="mt-4">
+      <x-jet-label for="email" value="email" class="capitalize" />
       @php
       $borderColor = $errors->has('email')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -30,7 +42,7 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="phone" value="Phone Number" class="capitalize" />
+      <x-jet-label for="phone" value="phone number" class="capitalize" />
       @php
       $borderColor = $errors->has('phone')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -42,7 +54,7 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="dateOfBirth" value="Date Of Birth" class="capitalize" />
+      <x-jet-label for="dateOfBirth" value="date of birth" class="capitalize" />
       @php
       $borderColor = $errors->has('dateOfBirth')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -57,7 +69,7 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="password" value="Password" class="capitalize" />
+      <x-jet-label for="password" value="password" class="capitalize" />
       @php
       $borderColor = $errors->has('password')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -69,7 +81,7 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="roleId" value="Role" class="capitalize" />
+      <x-jet-label for="roleId" value="role" class="capitalize" />
       @php
       $borderColor = $errors->has('password_confirmation')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
@@ -86,7 +98,7 @@
     </div>
 
     <div class="mt-4">
-      <x-jet-label for="address" value="Address" class="capitalize" />
+      <x-jet-label for="address" value="address" class="capitalize" />
       @php
       $borderColor = $errors->has('address')
       ? 'border-red-300 focus:border-red-300 focus:ring-red-300'

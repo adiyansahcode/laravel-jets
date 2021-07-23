@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('name', 100)->nullable();
+            $table->string('username', 100)->nullable();
             $table->string('phone', 100)->nullable();
             $table->string('email', 100)->nullable();
             $table->timestamp('email_verified_at')->nullable();
@@ -25,6 +26,7 @@ class CreateUsersTable extends Migration
             $table->string('profile_photo_path', 2048)->nullable();
             $table->date('date_of_birth')->nullable();
             $table->longText('address')->nullable();
+            $table->enum('is_active', [0, 1])->default(1)->nullable();
 
             $table->timestamps();
             $table->softDeletes();

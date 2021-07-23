@@ -18,6 +18,7 @@ class CreatePermissionsTable extends Migration
             $table->uuid('uuid')->unique();
 
             $table->string('title')->nullable();
+            $table->string('param')->nullable();
             $table->text('detail')->nullable();
 
             $table->timestamps();

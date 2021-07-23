@@ -19,6 +19,7 @@ class CreateRolesTable extends Migration
 
             $table->string('title')->nullable();
             $table->text('detail')->nullable();
+            $table->enum('is_active', [0, 1])->default(1)->nullable();
 
             $table->timestamps();
             $table->softDeletes();

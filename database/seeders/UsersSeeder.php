@@ -29,6 +29,7 @@ class UsersSeeder extends Seeder
                     'updated_at' => now(),
                     'uuid' => $faker->uuid(),
                     'name' => 'admin',
+                    'username' => 'admin',
                     'phone' => '01234567',
                     'email' => 'admin@email.com',
                     'email_verified_at' => now(),
@@ -40,6 +41,7 @@ class UsersSeeder extends Seeder
             $user = new User();
             $user->uuid = $faker->uuid();
             $user->name = 'user';
+            $user->username = 'user';
             $user->phone = '7890123';
             $user->email = 'user@email.com';
             $user->email_verified_at = now();

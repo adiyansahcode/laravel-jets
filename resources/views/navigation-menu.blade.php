@@ -13,10 +13,11 @@
         <!-- Navigation Links -->
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
           <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-              {{ __('Dashboard') }}
+            {{ __('Dashboard') }}
           </x-jet-nav-link>
         </div>
 
+        @canany(['roleAccess', 'userAccess'])
         <!-- Users Management -->
         <div class="hidden space-x-8 sm:-my-px sm:ml-6 sm:flex">
           <x-jet-dropdown align="left" width="60">
@@ -30,7 +31,7 @@
                 <button type="button">
                   Users Management
 
-                  <x-heroicon-o-chevron-up x-show="open" class="w-4 ml-1 inline-flex"/>
+                  <x-heroicon-o-chevron-up x-show="open" class="w-4 ml-1 inline-flex" />
                   <x-heroicon-o-chevron-down x-show="!open" class="w-4 ml-1 inline-flex" />
                 </button>
               </span>
@@ -43,20 +44,22 @@
                 </div>
 
                 @can('roleAccess')
-                  <x-jet-dropdown-link href="#">
-                    {{ __('Role') }}
-                  </x-jet-dropdown-link>
+                <x-jet-dropdown-link href="#">
+                  {{ __('Role') }}
+                </x-jet-dropdown-link>
                 @endcan
 
                 @can('userAccess')
-                  <x-jet-dropdown-link href="{{ route('users.index') }}">
-                    {{ __('Users') }}
-                  </x-jet-dropdown-link>
+                <x-jet-dropdown-link href="{{ route('users.index') }}">
+                  {{ __('Users') }}
+                </x-jet-dropdown-link>
                 @endcan
               </div>
             </x-slot>
           </x-jet-dropdown>
         </div>
+        @endcanany
+
       </div>
 
       <div class="hidden sm:flex sm:items-center sm:ml-5">
@@ -111,7 +114,7 @@
 
                 <x-jet-dropdown-link href="{{ route('logout') }}" onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                  {{ __('Log Out') }}
+                  {{ __('Sign Out') }}
                 </x-jet-dropdown-link>
               </form>
             </x-slot>
@@ -141,23 +144,25 @@
         {{ __('Dashboard') }}
       </x-jet-responsive-nav-link>
 
-      <div class="border-t border-gray-200"></div>
+      @canany(['roleAccess', 'userAccess'])
+        <div class="border-t border-gray-200"></div>
 
-      <div class="block px-4 py-2 text-xs text-gray-400">
-        {{ __('Users Management') }}
-      </div>
+        <div class="block px-4 py-2 text-xs text-gray-400">
+          {{ __('Users Management') }}
+        </div>
 
-      @can('roleAccess')
+        @can('roleAccess')
         <x-jet-responsive-nav-link href="#">
           {{ __('Role') }}
         </x-jet-responsive-nav-link>
-      @endcan
+        @endcan
 
-      @can('userAccess')
+        @can('userAccess')
         <x-jet-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')">
           {{ __('Users') }}
         </x-jet-responsive-nav-link>
-      @endcan
+        @endcan
+      @endcanany
     </div>
 
     <!-- Responsive Settings Options -->
@@ -195,7 +200,7 @@
 
           <x-jet-responsive-nav-link href="{{ route('logout') }}" onclick="event.preventDefault();
                                     this.closest('form').submit();">
-            {{ __('Log Out') }}
+            {{ __('Sign Out') }}
           </x-jet-responsive-nav-link>
         </form>
       </div>

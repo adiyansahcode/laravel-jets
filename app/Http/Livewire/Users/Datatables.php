@@ -23,6 +23,7 @@ class Datatables extends DataTableComponent
      * @var array
      */
     protected $listeners = [
+        'refreshDatatable' => '$refresh',
         'resetSelected' => 'resetSelected',
     ];
 
@@ -104,6 +105,7 @@ class Datatables extends DataTableComponent
      */
     public array $filters = [
         'verified' => '',
+        'activeFilter' => '',
         'roleFilter' => '',
     ];
 
@@ -135,90 +137,14 @@ class Datatables extends DataTableComponent
                 ->date([
                     'max' => now()->isoFormat('YYYY-MM-DD')
                 ]),
+            'activeFilter' => Filter::make('Active')
+                ->select([
+                    ''    => 'All',
+                    'yes' => 'Yes',
+                    'no'  => 'No',
+                ]),
             'roleFilter' => Filter::make('Role')
                 ->select($roleArray),
-        ];
-    }
-
-    /**
-     * set table row id
-     *
-     * @param [type] $row
-     * @return string|null
-     */
-    public function setTableRowId($row): string
-    {
-        return $row->uuid;
-    }
-
-    /**
-     * mount variable
-     *
-     * @return void
-     */
-    public function mount(): void
-    {
-        $action = [];
-
-        if (Gate::allows('userDelete')) {
-            $action = Arr::add($action, 'deleteSelected', 'Delete');
-        }
-
-        $this->bulkActions = $action;
-    }
-
-    /**
-     * List Of Table
-     *
-     * @return array
-     */
-    public function columns(): array
-    {
-        $this->number = ($this->page) ? (($this->page - 1) * $this->perPage) + 1 : 0;
-
-        return [
-            Column::make('No.')
-                ->format(function () {
-                    return $this->number++;
-                }),
-            Column::make('Name', 'name')
-                ->sortable()
-                ->searchable(),
-            Column::make('Role', 'role')
-                ->format(function ($value) {
-                    $result = "<span class='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-jets-100 text-jets-800'> ";
-                    $result .= ($value) ? ($value->title) : null;
-                    $result .= "</span>";
-                    return $result;
-                })->asHtml(),
-            Column::make('Email')
-                ->sortable(function (Builder $query, $direction) {
-                    return $query->orderBy('email', $direction);
-                })
-                ->searchable()
-                ->format(function ($value, $column, $row) {
-                    $emailVerifiedAt = ($row->email_verified_at) ? (new Carbon($row->email_verified_at))->isoFormat('D MMMM YYYY') : null;
-                    $result = "<div class='text-sm text-gray-900'> " . $row->email . "</div>";
-                    $result .= "<div class='text-sm text-gray-500'> Verified At: " . $emailVerifiedAt . "</div>";
-                    return $result;
-                })->asHtml(),
-            Column::make('Phone', 'phone')
-                ->sortable()
-                ->searchable(),
-            Column::make('Last Updated')
-                ->sortable(function (Builder $query, $direction) {
-                    return $query->orderBy('updated_at', $direction);
-                })
-                ->format(function ($value, $column, $row) {
-                    $updatedAt = ($row->updated_at) ? (new Carbon($row->updated_at))->isoFormat('D MMMM YYYY') : null;
-                    $result = "<div class='text-sm text-gray-900'> At: " . $updatedAt . "</div>";
-                    $result .= "<div class='text-sm text-gray-500'> By: " . $row->updatedBy->name . "</div>";
-                    return $result;
-                })->asHtml(),
-            Column::make('Actions')
-                ->format(function ($value, $column, $row) {
-                    return view('livewire.users.action')->with('row', $row);
-                }),
         ];
     }
 
@@ -244,6 +170,13 @@ class Datatables extends DataTableComponent
             ->when($this->getFilter('verifiedTo'), function ($query, $date) {
                 return $query->where('email_verified_at', '<=', $date);
             })
+            ->when($this->getFilter('activeFilter'), function ($query, $active) {
+                if ($active === 'yes') {
+                    return $query->where('is_active', 1);
+                }
+
+                return $query->where('is_active', 0);
+            })
             ->when($this->getFilter('roleFilter'), function ($query, $value) {
                 $query->whereHas('role', function ($query) use ($value) {
                     $query->where('id', $value);
@@ -251,6 +184,78 @@ class Datatables extends DataTableComponent
 
                 return $query;
             });
+    }
+
+    /**
+     * mount variable
+     *
+     * @return void
+     */
+    public function mount(): void
+    {
+        $action = [];
+
+        if (Gate::allows('userDelete')) {
+            $action = Arr::add($action, 'deleteSelected', 'Delete');
+        }
+
+        if (Gate::allows('userActivate')) {
+            $action = Arr::add($action, 'activate', 'Activate');
+        }
+
+        if (Gate::allows('userDeactivate')) {
+            $action = Arr::add($action, 'deactivate', 'Deactivate');
+        }
+
+        $this->bulkActions = $action;
+    }
+
+    /**
+     * List Of Table
+     *
+     * @return array
+     */
+    public function columns(): array
+    {
+        return [
+            Column::make('Name', 'name')
+                ->sortable()
+                ->searchable(),
+            Column::make('Email', 'email')
+                ->sortable()
+                ->searchable(),
+            Column::make('Phone', 'phone')
+                ->sortable()
+                ->searchable(),
+            Column::make('Role', 'role'),
+            Column::make('Active', 'is_active'),
+            Column::make('Last Updated', 'updated_at')
+                ->sortable()
+                ->searchable(),
+            Column::make('Actions'),
+        ];
+    }
+
+    /**
+     * view for datatables
+     *
+     * @return string
+     */
+    public function rowView(): string
+    {
+        return 'livewire.users.datatables';
+    }
+
+    /**
+     * reset for bulk action
+     *
+     * @return void
+     */
+    public function resetSelected(): void
+    {
+        $this->selected = [];
+        $this->resetBulk(); // Clear the selected rows
+        $this->resetPage(); // Go back to page 1
     }
 
     /**
@@ -263,9 +268,31 @@ class Datatables extends DataTableComponent
         $this->emit('userMultipleDelete', $this->selectedKeys());
     }
 
-    public function resetSelected(): void
+    /**
+     * activate selected id from table
+     *
+     * @return void
+     */
+    public function activate(): void
     {
-        $this->resetBulk(); // Clear the selected rows
-        $this->resetPage(); // Go back to page 1
+        if ($this->selectedRowsQuery->count() > 0) {
+            User::whereIn('id', $this->selectedKeys())->update(['is_active' => 1]);
+        }
+
+        $this->resetSelected();
+    }
+
+    /**
+     * deactivate selected id from table
+     *
+     * @return void
+     */
+    public function deactivate(): void
+    {
+        if ($this->selectedRowsQuery->count() > 0) {
+            User::whereIn('id', $this->selectedKeys())->update(['is_active' => 0]);
+        }
+
+        $this->resetSelected();
     }
 }
