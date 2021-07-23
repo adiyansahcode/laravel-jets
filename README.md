@@ -45,6 +45,6 @@ php artisan storage:link
 * **nginx server is recommended**
 * default user login
 ```
-email : admin@email.com
+username : admin
 password : admin
 ```
