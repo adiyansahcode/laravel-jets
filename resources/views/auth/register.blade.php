@@ -1,4 +1,4 @@
-<x-guest-layout :title="__('Create your account')">
+<x-guest-layout :title="__('Create Your Account')">
   <x-jet-authentication-card>
     <x-slot name="logo">
       <x-jet-authentication-card-logo />
@@ -10,11 +10,11 @@
     <x-form id="form-login" action="{{ route('register') }}" novalidate autocomplete="off">
 
       <div>
-        <x-jet-label for="name" value="{{ __('Name') }}" />
+        <x-jet-label for="name" value="name" class="capitalize" />
         @php
-          $borderColor = $errors->has('name')
-          ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
-          : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+        $borderColor = $errors->has('name')
+        ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+        : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
         @endphp
         <x-input id="name" name="name" required autofocus
           class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
@@ -22,11 +22,23 @@
       </div>
 
       <div class="mt-4">
-        <x-jet-label for="email" value="{{ __('Email') }}" />
+        <x-jet-label for="username" value="username" class="capitalize" />
         @php
-          $borderColor = $errors->has('email')
-          ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
-          : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+        $borderColor = $errors->has('name')
+        ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+        : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+        @endphp
+        <x-input id="username" name="username" required
+          class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
+        <x-error field="username" class="mt-1 font-medium text-sm text-red-600" />
+      </div>
+
+      <div class="mt-4">
+        <x-jet-label for="email" value="email" class="capitalize" />
+        @php
+        $borderColor = $errors->has('email')
+        ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+        : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
         @endphp
         <x-input id="email" name="email" type="email" required
           class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
@@ -34,11 +46,11 @@
       </div>
 
       <div class="mt-4">
-        <x-jet-label for="password" value="{{ __('Password') }}" />
+        <x-jet-label for="password" value="password" class="capitalize" />
         @php
-          $borderColor = $errors->has('password')
-          ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
-          : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+        $borderColor = $errors->has('password')
+        ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+        : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
         @endphp
         <x-form.password-show id="password" name="password"
           class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
@@ -46,11 +58,11 @@
       </div>
 
       <div class="mt-4">
-        <x-jet-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
+        <x-jet-label for="password_confirmation" value="Confirm Password" class="capitalize" />
         @php
-          $borderColor = $errors->has('password_confirmation')
-          ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
-          : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
+        $borderColor = $errors->has('password_confirmation')
+        ? 'border-red-300 focus:border-red-300 focus:ring-red-300'
+        : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
         @endphp
         <x-form.password-show id="password_confirmation" name="password_confirmation"
           class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />

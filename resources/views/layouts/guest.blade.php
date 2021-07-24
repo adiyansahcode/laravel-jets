@@ -1,4 +1,4 @@
-<x-base-layout :title="isset($title) ? $title : ''">
+<x-base-layout :title="($title) ? $title : null">
   <div class="font-sans text-gray-900 antialiased">
     {{ $slot }}
   </div>

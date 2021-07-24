@@ -1,4 +1,4 @@
-<x-html :title="isset($title) ? $title . ' | ' . config('app.name') : config('app.name')">
+<x-html :title="($title) ? $title . ' | ' . config('app.name') : config('app.name')">
 
   <x-slot name="head">
 
@@ -30,6 +30,6 @@
 
   @stack('modals')
 
-  @stack('scripts')
   @livewireScripts
+  @stack('scripts')
 </x-html>

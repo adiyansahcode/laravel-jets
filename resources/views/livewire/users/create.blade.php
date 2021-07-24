@@ -88,7 +88,7 @@
       : 'border-gray-300 focus:border-jets-300 focus:ring-jets-300';
       @endphp
       <select name="roleId" id="roleId" wire:model.defer="roleId"
-        class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}">
+        class="text-gray-700 mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}">
         <option value='0' selected="true" disabled="disabled">--choose data--</option>
         @foreach($roles as $rolesId => $rolesTitle)
         <option value="{{ $rolesId }}">{{ $rolesTitle }}</option>

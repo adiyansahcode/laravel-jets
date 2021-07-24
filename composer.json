@@ -20,8 +20,7 @@
         "laravel/tinker": "^2.5",
         "livewire/livewire": "^2.0",
         "owenvoke/blade-fontawesome": "^1.9",
-        "rappasoft/laravel-livewire-tables": "^1.11",
-        "renatomarinho/laravel-page-speed": "^2.0"
+        "rappasoft/laravel-livewire-tables": "^1.11"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",

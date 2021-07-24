@@ -229,7 +229,7 @@ class Index extends Component
         $user->username = $this->username;
         $user->email = $this->email;
         $user->phone = $this->phone;
-        $user->date_of_birth = ($this->dateOfBirth) ? (new Carbon($this->dateOfBirth))->isoFormat('YYYY-MM-DD') : null;
+        $user->date_of_birth = $this->dateOfBirth;
         $user->address = $this->address;
         $user->password = app('hash')->make($this->password);
 
@@ -275,6 +275,7 @@ class Index extends Component
             'name' => [
                 'required',
                 'string',
+                'max:100',
             ],
             'username' => [
                 'required',
@@ -324,7 +325,7 @@ class Index extends Component
         $user->username = $this->username;
         $user->email = $this->email;
         $user->phone = $this->phone;
-        $user->date_of_birth = ($this->dateOfBirth) ? (new Carbon($this->dateOfBirth))->isoFormat('YYYY-MM-DD') : null;
+        $user->date_of_birth = $this->dateOfBirth;
         $user->address = $this->address;
 
         $user->role()->associate($this->roleId);

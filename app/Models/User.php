@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Str;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
@@ -74,16 +75,22 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be mutated to dates.
+     * the format date be used when actually storing a model's dates.
      *
-     * @var array
+     * @var string
      */
-    protected $dates = [
-        'email_verified_at',
-        'created_at',
-        'updated_at',
-        'date_of_birth',
-    ];
+    protected $dateFormat = 'Y-m-d';
+
+    /**
+     * the default serialization format for all of your model's dates.
+     *
+     * @param  \DateTimeInterface  $date
+     * @return string
+     */
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return ($date) ? (new Carbon($date))->isoFormat('YYYY-MM-DD') : null;
+    }
 
     /**
      * The accessors to append to the model's array form.
@@ -104,26 +111,33 @@ class User extends Authenticatable
         // event before create data
         static::creating(function (User $user) {
             $user->uuid = (string) Str::uuid();
-            $user->created_by = auth()->user()->id;
-            $user->updated_by = auth()->user()->id;
+            if (auth()->user()) {
+                $user->created_by = auth()->user()->id;
+                $user->updated_by = auth()->user()->id;
+            }
         });
 
         // event after create data
         static::created(function (User $user) {
-            if (!$user->role) {
+            if (empty($user->role)) {
                 $user->role()->associate(2);
+                $user->save();
             }
         });
 
         // event before update data
         static::updating(function (User $user) {
-            $user->updated_by = auth()->user()->id;
+            if (auth()->user()) {
+                $user->updated_by = auth()->user()->id;
+            }
         });
 
         // event after delete data
         static::deleted(function (User $user) {
-            $user->deleted_by = auth()->user()->id;
-            $user->save();
+            if (auth()->user()) {
+                $user->deleted_by = auth()->user()->id;
+                $user->save();
+            }
         });
     }
 

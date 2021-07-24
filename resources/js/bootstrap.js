@@ -1,8 +1,4 @@
-import Alpine from 'alpinejs';
 import Pikaday from 'pikaday';
-
-window.Alpine = Alpine;
-Alpine.start();
 
 window._ = require('lodash');
 
