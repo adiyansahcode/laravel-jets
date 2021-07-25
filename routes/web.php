@@ -15,13 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::redirect('/', '/login');
+Route::redirect('/', '/dashboard');
 
-Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
-    Route::get('dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-});
+Route::get('dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
 
 /**
  * read all file router

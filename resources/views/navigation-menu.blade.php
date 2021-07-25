@@ -17,6 +17,7 @@
           </x-jet-nav-link>
         </div>
 
+        @if (Auth::user())
         @canany(['roleAccess', 'userAccess'])
         <!-- Users Management -->
         <div class="hidden space-x-8 sm:-my-px sm:ml-6 sm:flex">
@@ -24,15 +25,18 @@
             <x-slot name="trigger">
               @php
               $navClass = (request()->routeIs('users.*'))
-              ? 'inline-flex items-center px-1 pt-6 pb-5 border-b-2 border-jets-400 text-sm font-medium leading-5 text-gray-900 focus:outline-none focus:border-jets-700 transition'
-              : 'inline-flex items-center px-1 pt-6 pb-5 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition';
+              ? 'inline-flex items-center px-1 pt-6 pb-5 border-b-2 border-jets-400 text-sm font-medium leading-5
+              text-gray-900 focus:outline-none focus:border-jets-700 transition'
+              : 'inline-flex items-center px-1 pt-6 pb-5 border-b-2 border-transparent text-sm font-medium leading-5
+              text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700
+              focus:border-gray-300 transition';
               @endphp
               <span class="{{ $navClass }}">
                 <button type="button">
                   Users Management
 
-                  <x-heroicon-o-chevron-up x-show="open" class="w-4 ml-1 inline-flex" />
-                  <x-heroicon-o-chevron-down x-show="!open" class="w-4 ml-1 inline-flex" />
+                  <x-heroicon-o-chevron-up x-show="open" class="w-4 ml-1 inline-flex" x-cloak />
+                  <x-heroicon-o-chevron-down x-show="!open" class="w-4 ml-1 inline-flex" x-cloak />
                 </button>
               </span>
             </x-slot>
@@ -59,9 +63,26 @@
           </x-jet-dropdown>
         </div>
         @endcanany
-
+        @endif
       </div>
 
+      @if (!Auth::user())
+      <div class="flex">
+        <div class="hidden space-x-8 sm:-my-px sm:ml-5 sm:flex">
+          <x-jet-nav-link href="{{ route('login') }}" :active="request()->routeIs('login')">
+            Sign In
+          </x-jet-nav-link>
+        </div>
+
+        <div class="hidden space-x-8 sm:-my-px sm:ml-5 sm:flex">
+          <x-jet-nav-link href="{{ route('register') }}" :active="request()->routeIs('register')">
+            Sign Up
+          </x-jet-nav-link>
+        </div>
+      </div>
+      @endif
+
+      @if (Auth::user())
       <div class="hidden sm:flex sm:items-center sm:ml-5">
         <!-- Settings Dropdown -->
         <div class="ml-3 relative">
@@ -121,6 +142,7 @@
           </x-jet-dropdown>
         </div>
       </div>
+      @endif
 
       <!-- Hamburger -->
       <div class="-mr-2 flex items-center sm:hidden">
@@ -144,28 +166,43 @@
         {{ __('Dashboard') }}
       </x-jet-responsive-nav-link>
 
+      @if (Auth::user())
       @canany(['roleAccess', 'userAccess'])
-        <div class="border-t border-gray-200"></div>
+      <div class="border-t border-gray-200"></div>
 
-        <div class="block px-4 py-2 text-xs text-gray-400">
-          {{ __('Users Management') }}
-        </div>
+      <div class="block px-4 py-2 text-xs text-gray-400">
+        {{ __('Users Management') }}
+      </div>
 
-        @can('roleAccess')
-        <x-jet-responsive-nav-link href="#">
-          {{ __('Role') }}
-        </x-jet-responsive-nav-link>
-        @endcan
+      @can('roleAccess')
+      <x-jet-responsive-nav-link href="#">
+        {{ __('Role') }}
+      </x-jet-responsive-nav-link>
+      @endcan
 
-        @can('userAccess')
-        <x-jet-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')">
-          {{ __('Users') }}
-        </x-jet-responsive-nav-link>
-        @endcan
+      @can('userAccess')
+      <x-jet-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')">
+        {{ __('Users') }}
+      </x-jet-responsive-nav-link>
+      @endcan
       @endcanany
+      @endif
+
+      @if (!Auth::user())
+      <div class="border-t border-gray-200"></div>
+
+      <x-jet-responsive-nav-link href="{{ route('login') }}" :active="request()->routeIs('login')">
+        Sign In
+      </x-jet-responsive-nav-link>
+
+      <x-jet-responsive-nav-link href="{{ route('register') }}" :active="request()->routeIs('register')">
+        Sign Up
+      </x-jet-responsive-nav-link>
+      @endif
     </div>
 
     <!-- Responsive Settings Options -->
+    @if (Auth::user())
     <div class="pt-4 pb-1 border-t border-gray-200">
       <div class="flex items-center px-4">
         @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
@@ -205,5 +242,6 @@
         </form>
       </div>
     </div>
+    @endif
   </div>
 </nav>
