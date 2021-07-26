@@ -237,7 +237,7 @@ class Index extends Component
 
         $user->save();
 
-        session()->flash('message', $this->dateOfBirth);
+        session()->flash('message', 'Saved Successfully.');
 
         $this->createModal = false;
         $this->resetInputFields();

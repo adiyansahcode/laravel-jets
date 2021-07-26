@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Livewire\Users;
 
-use App\Models\User;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Gate;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Filter;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Arr;
-use Symfony\Component\HttpFoundation\Response;
 
 class Datatables extends DataTableComponent
 {
@@ -28,80 +26,80 @@ class Datatables extends DataTableComponent
     ];
 
     /**
-     * The Table Name
+     * The Table Name.
      */
     protected string $tableName = 'users';
 
     /**
-     * Table primary key
+     * Table primary key.
      */
     public string $primaryKey = 'id';
 
     /**
-     * Setting show options to show column name
+     * Setting show options to show column name.
      */
     public bool $columnSelect = true;
 
     /**
-     * setting defaut sorting column name
+     * setting defaut sorting column name.
      */
     public string $defaultSortColumn = 'name';
 
     /**
-     * setting defaut sorting direction
+     * setting defaut sorting direction.
      */
-    public string $defaultSortDirection  = 'asc';
+    public string $defaultSortDirection = 'asc';
 
     /**
-     * setting defaut for sorting only one column
+     * setting defaut for sorting only one column.
      */
-    public bool $singleColumnSorting  = true;
+    public bool $singleColumnSorting = true;
 
     /**
-     * setting for hide action when not selected row
+     * setting for hide action when not selected row.
      */
     public bool $hideBulkActionsOnEmpty = true;
 
     /**
-     * Setting for pagination name
+     * Setting for pagination name.
      */
     protected string $pageName = 'page';
 
     /**
-     * Setting show all in pagination options
+     * Setting show all in pagination options.
      */
     public bool $perPageAll = true;
 
     /**
-     * Setting show per pagination options
+     * Setting show per pagination options.
      */
     public array $perPageAccepted = [
         5,
         10,
         25,
         50,
-        100
+        100,
     ];
 
     /**
-     * Setting defaut data pagination page
+     * Setting defaut data pagination page.
      */
-    public int $perPage  = 5;
+    public int $perPage = 5;
 
     /**
-     * setting for number column
+     * setting for number column.
      *
      * @var int
      */
     public int $number = 1;
 
     /**
-     * setting show action if row selected
+     * setting show action if row selected.
      */
     public array $bulkActions = [];
 
     /**
-     * filters default values
+     * filters default values.
      */
     public array $filters = [
         'verified' => '',
@@ -110,14 +108,14 @@ class Datatables extends DataTableComponent
     ];
 
     /**
-     * filters Setting
+     * filters Setting.
      *
      * @return array
      */
     public function filters(): array
     {
         $roleArray = [
-            0 => 'All'
+            0 => 'All',
         ];
         $role = Role::orderBy('title')->get()->pluck('title', 'id')->toArray();
         $roleArray = array_merge($roleArray, $role);
@@ -131,11 +129,11 @@ class Datatables extends DataTableComponent
                 ]),
             'verifiedFrom' => Filter::make('Verified From')
                 ->date([
-                    'max' => now()->isoFormat('YYYY-MM-DD')
+                    'max' => now()->isoFormat('YYYY-MM-DD'),
                 ]),
             'verifiedTo' => Filter::make('Verified To')
                 ->date([
-                    'max' => now()->isoFormat('YYYY-MM-DD')
+                    'max' => now()->isoFormat('YYYY-MM-DD'),
                 ]),
             'activeFilter' => Filter::make('Active')
                 ->select([
@@ -149,14 +147,14 @@ class Datatables extends DataTableComponent
     }
 
     /**
-     * Query for table data
+     * Query for table data.
      *
      * @return Builder
      */
     public function query(): Builder
     {
         return User::query()
-            ->with(['role','updatedBy'])
+            ->with(['role', 'updatedBy'])
             ->when($this->getFilter('verified'), function ($query, $verified) {
                 if ($verified === 'yes') {
                     return $query->whereNotNull('email_verified_at');
@@ -187,7 +185,7 @@ class Datatables extends DataTableComponent
     }
 
     /**
-     * mount variable
+     * mount variable.
      *
      * @return void
      */
@@ -211,7 +209,7 @@ class Datatables extends DataTableComponent
     }
 
     /**
-     * List Of Table
+     * List Of Table.
      *
      * @return array
      */
@@ -237,7 +235,7 @@ class Datatables extends DataTableComponent
     }
 
     /**
-     * view for datatables
+     * view for datatables.
      *
      * @return string
      */
@@ -247,7 +245,7 @@ class Datatables extends DataTableComponent
     }
 
     /**
-     * reset for bulk action
+     * reset for bulk action.
      *
      * @return void
      */
@@ -259,7 +257,7 @@ class Datatables extends DataTableComponent
     }
 
     /**
-     * delete selected id from table
+     * delete selected id from table.
      *
      * @return void
      */
@@ -269,7 +267,7 @@ class Datatables extends DataTableComponent
     }
 
     /**
-     * activate selected id from table
+     * activate selected id from table.
      *
      * @return void
      */
@@ -283,7 +281,7 @@ class Datatables extends DataTableComponent
     }
 
     /**
-     * deactivate selected id from table
+     * deactivate selected id from table.
      *
      * @return void
      */

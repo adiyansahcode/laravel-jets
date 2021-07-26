@@ -24,7 +24,7 @@
           <x-jet-dropdown align="left" width="60">
             <x-slot name="trigger">
               @php
-              $navClass = (request()->routeIs('users.*'))
+              $navClass = (request()->routeIs('user.index') || request()->routeIs('role.index'))
               ? 'inline-flex items-center px-1 pt-6 pb-5 border-b-2 border-jets-400 text-sm font-medium leading-5
               text-gray-900 focus:outline-none focus:border-jets-700 transition'
               : 'inline-flex items-center px-1 pt-6 pb-5 border-b-2 border-transparent text-sm font-medium leading-5
@@ -48,13 +48,13 @@
                 </div>
 
                 @can('roleAccess')
-                <x-jet-dropdown-link href="#">
+                <x-jet-dropdown-link href="{{ route('role.index') }}">
                   {{ __('Role') }}
                 </x-jet-dropdown-link>
                 @endcan
 
                 @can('userAccess')
-                <x-jet-dropdown-link href="{{ route('users.index') }}">
+                <x-jet-dropdown-link href="{{ route('user.index') }}">
                   {{ __('Users') }}
                 </x-jet-dropdown-link>
                 @endcan
@@ -175,13 +175,13 @@
       </div>
 
       @can('roleAccess')
-      <x-jet-responsive-nav-link href="#">
+      <x-jet-responsive-nav-link href="{{ route('role.index') }}" :active="request()->routeIs('role.index')">
         {{ __('Role') }}
       </x-jet-responsive-nav-link>
       @endcan
 
       @can('userAccess')
-      <x-jet-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')">
+      <x-jet-responsive-nav-link href="{{ route('user.index') }}" :active="request()->routeIs('user.index')">
         {{ __('Users') }}
       </x-jet-responsive-nav-link>
       @endcan

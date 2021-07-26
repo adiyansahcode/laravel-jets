@@ -71,6 +71,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime:Y-m-d',
         'created_at' => 'datetime:Y-m-d',
         'updated_at' => 'datetime:Y-m-d',
+        'deleted_at' => 'datetime:Y-m-d',
         'date_of_birth' => 'datetime:Y-m-d',
     ];
 
@@ -87,7 +88,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @param  \DateTimeInterface  $date
      * @return string
      */
-    protected function serializeDate(\DateTimeInterface $date)
+    protected function serializeDate(\DateTimeInterface $date): ?string
     {
         return ($date) ? (new Carbon($date))->isoFormat('YYYY-MM-DD') : null;
     }
@@ -141,22 +142,42 @@ class User extends Authenticatable implements MustVerifyEmail
         });
     }
 
-    public function createdBy()
+    /**
+     * relation to table user on created_by
+     *
+     * @return object
+     */
+    public function createdBy(): object
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function updatedBy()
+    /**
+     * relation to table user on updated_by
+     *
+     * @return object
+     */
+    public function updatedBy(): object
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
 
-    public function deletedBy()
+    /**
+     * relation to table user on deleted_by
+     *
+     * @return object
+     */
+    public function deletedBy(): object
     {
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
-    public function role()
+    /**
+     * relation to table role on role_id
+     *
+     * @return object
+     */
+    public function role(): object
     {
         return $this->belongsTo(Role::class, 'role_id');
     }
