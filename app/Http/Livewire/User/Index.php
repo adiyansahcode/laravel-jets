@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Livewire\Users;
+namespace App\Http\Livewire\User;
 
 use App\Models\Role;
 use App\Models\User;
@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Str;
 
 class Index extends Component
 {
@@ -83,7 +84,7 @@ class Index extends Component
      */
     public function mount(): void
     {
-        $this->roles = Role::pluck('title', 'id')->toArray();
+        $this->roles = Role::where('is_active', 1)->pluck('title', 'id')->toArray();
     }
 
     /**
@@ -95,7 +96,7 @@ class Index extends Component
     {
         abort_if(Gate::denies('userAccess'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('livewire.users.index')
+        return view('livewire.user.index')
             ->layoutData(['title' =>  $this->title]);
     }
 
@@ -143,7 +144,7 @@ class Index extends Component
         $this->phone = $data->phone;
         $this->dateOfBirth = ($data->date_of_birth) ? (new Carbon($data->date_of_birth))->isoFormat('YYYY-MM-DD') : null;
         $this->address = $data->address;
-        $this->roleId = ($data->role) ? ($data->role->id) : null;
+        $this->roleId = ($data->role) ? ($data->role->id) : 0;
         $this->roleTitle = ($data->role) ? ($data->role->title) : null;
     }
 
@@ -180,18 +181,32 @@ class Index extends Component
                 'required',
                 'string',
                 'alpha_dash',
+                'max:100',
                 Rule::unique('App\Models\User', 'username')->where(function ($query) {
                     return $query->whereNull('deleted_at');
                 }),
-                'max:100',
+                function ($attribute, $value, $fail) {
+                    // check unique case sensitive
+                    $data = User::whereRaw('LOWER(username) = ?', [Str::lower($value)])->first();
+                    if ($data) {
+                        $fail('The ' . $attribute . ' has already been taken.');
+                    }
+                },
             ],
             'email' => [
                 'required',
                 'email:rfc,dns',
+                'max:100',
                 Rule::unique('App\Models\User', 'email')->where(function ($query) {
                     return $query->whereNull('deleted_at');
                 }),
-                'max:100',
+                function ($attribute, $value, $fail) {
+                    // check unique case sensitive
+                    $data = User::whereRaw('LOWER(email) = ?', [Str::lower($value)])->first();
+                    if ($data) {
+                        $fail('The ' . $attribute . ' has already been taken.');
+                    }
+                },
             ],
             'phone' => [
                 'required',
@@ -202,12 +217,12 @@ class Index extends Component
                 'digits_between:1,20',
             ],
             'dateOfBirth' => [
-                'present',
+                'nullable',
                 'date',
                 'date_format:Y-m-d',
             ],
             'address' => [
-                'present',
+                'nullable',
                 'string',
                 'max:200',
             ],
@@ -281,19 +296,33 @@ class Index extends Component
                 'required',
                 'string',
                 'alpha_dash',
+                'max:100',
                 Rule::unique('App\Models\User', 'username')->ignore($this->dataId)->where(function ($query) {
                     return $query->whereNull('deleted_at');
                 }),
-                'max:100',
+                function ($attribute, $value, $fail) {
+                    // check unique case sensitive
+                    $data = User::where('id', '<>', $this->dataId)->whereRaw('LOWER(username) = ?', [Str::lower($value)])->first();
+                    if ($data) {
+                        $fail('The ' . $attribute . ' has already been taken.');
+                    }
+                }
             ],
             'email'    => [
                 'required',
                 'string',
                 'email:rfc,dns',
+                'max:100',
                 Rule::unique('App\Models\User', 'email')->ignore($this->dataId)->where(function ($query) {
                     return $query->whereNull('deleted_at');
                 }),
-                'max:100',
+                function ($attribute, $value, $fail) {
+                    // check unique case sensitive
+                    $data = User::where('id', '<>', $this->dataId)->whereRaw('LOWER(email) = ?', [Str::lower($value)])->first();
+                    if ($data) {
+                        $fail('The ' . $attribute . ' has already been taken.');
+                    }
+                }
             ],
             'phone'    => [
                 'required',
@@ -304,12 +333,12 @@ class Index extends Component
                 'digits_between:1,20',
             ],
             'dateOfBirth' => [
-                'present',
+                'nullable',
                 'date',
                 'date_format:Y-m-d',
             ],
             'address' => [
-                'present',
+                'nullable',
                 'string',
                 'max:200',
             ],

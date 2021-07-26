@@ -1,11 +1,11 @@
 @if($deleteModal)
 <x-jet-confirmation-modal wire:model="deleteModal">
   <x-slot name="title">
-      Delete User
+    {{ $titleLayout }} Delete Confirmation
   </x-slot>
 
   <x-slot name="content">
-      Are you sure you would like to delete this User ?
+      Are you sure you would like to delete this data ?
   </x-slot>
 
   <x-slot name="footer">

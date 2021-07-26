@@ -9,6 +9,6 @@ Route::group([
     'as' => 'user.',
     'middleware' => ['auth:sanctum', 'verified']
 ], function () {
-    Route::get('/', \App\Http\Livewire\Users\Index::class)
+    Route::get('/', \App\Http\Livewire\User\Index::class)
         ->name('index');
 });

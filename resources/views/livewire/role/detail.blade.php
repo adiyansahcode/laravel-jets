@@ -7,7 +7,7 @@
   </x-slot>
 
   <x-slot name="content">
-    <table class="min-w-full divide-y divide-gray-200">
+    <table class="min-w-full divide-y divide-gray-200 text-sm">
       <tbody class="bg-white divide-y divide-gray-200 text-gray-500">
         <tr>
           <td class="px-2 py-2 font-semibold capitalize">Title</td>

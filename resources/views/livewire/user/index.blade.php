@@ -20,22 +20,22 @@
       </x-jet-action-message>
     </div>
 
-    <livewire:users.datatables />
+    <livewire:user.datatables />
 
     @can('userCreate')
-    @include('livewire.users.create')
+    @include('livewire.user.create')
     @endcan
 
     @can('userUpdate')
-    @include('livewire.users.update')
+    @include('livewire.user.update')
     @endcan
 
     @can('userDetail')
-    @include('livewire.users.detail')
+    @include('livewire.user.detail')
     @endcan
 
     @can('userDelete')
-    @include('livewire.users.delete')
+    @include('livewire.user.delete')
     @endcan
   </div>
 </div>

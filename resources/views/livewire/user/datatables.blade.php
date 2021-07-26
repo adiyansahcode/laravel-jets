@@ -5,11 +5,11 @@
       <img class="h-10 w-10 rounded-full" src="{{ $row->profile_photo_url }}" alt="{{ $row->username }}">
     </div>
     <div class="ml-4">
-      <div class="text-sm font-medium text-gray-900">
-        {{ $row->username }}
-      </div>
       <div class="text-sm text-gray-500 capitalize">
         {{ $row->name }}
+      </div>
+      <div class="text-sm font-medium text-gray-900">
+        {{ $row->username }}
       </div>
     </div>
   </div>

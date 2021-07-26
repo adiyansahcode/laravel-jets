@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Livewire\Users;
+namespace App\Http\Livewire\User;
 
 use App\Models\Role;
 use App\Models\User;
@@ -114,11 +114,10 @@ class Datatables extends DataTableComponent
      */
     public function filters(): array
     {
+        $role = Role::where('is_active', 1)->orderBy('title')->get()->pluck('title', 'id')->toArray();
         $roleArray = [
-            0 => 'All',
-        ];
-        $role = Role::orderBy('title')->get()->pluck('title', 'id')->toArray();
-        $roleArray = array_merge($roleArray, $role);
+            '' => 'All',
+        ] + $role;
 
         return [
             'verified' => Filter::make('E-mail Verified')
@@ -241,7 +240,7 @@ class Datatables extends DataTableComponent
      */
     public function rowView(): string
     {
-        return 'livewire.users.datatables';
+        return 'livewire.user.datatables';
     }
 
     /**
