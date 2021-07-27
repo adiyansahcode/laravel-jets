@@ -25,21 +25,21 @@
 
 <x-livewire-tables::table.cell>
   <div class="flex item-center">
-    @can('userDetail')
+    @can('roleDetail')
     <div class="w-5 mr-3 transform text-gray-600 hover:text-jets-600 hover:scale-110">
       <button wire:click="$emit('detail', {{ $row->id }})">
         <x-heroicon-o-eye />
       </button>
     </div>
     @endcan
-    @can('userUpdate')
+    @can('roleUpdate')
     <div class="w-5 mr-3 transform text-gray-600 hover:text-jets-600 hover:scale-110">
       <button wire:click="$emit('update', {{ $row->id }})">
         <x-heroicon-o-pencil />
       </button>
     </div>
     @endcan
-    @can('userDelete')
+    @can('roleDelete')
     <div class="w-5 mr-3 transform text-gray-600 hover:text-red-600 hover:scale-110">
       <button wire:click="$emit('delete', {{ $row->id }})">
         <x-heroicon-o-trash />

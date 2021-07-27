@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Livewire\Role;
 
+use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Gate;
@@ -11,6 +12,7 @@ use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 class Index extends Component
 {
@@ -18,6 +20,13 @@ class Index extends Component
      * title layout page.
      */
     public string $titleLayout = 'Role';
+
+    /**
+     * list permissions.
+     */
+    public array $permissions;
+
+    public array $permissionId = [];
 
     /**
      * form variable.
@@ -61,7 +70,7 @@ class Index extends Component
      */
     public function mount(): void
     {
-        //
+        $this->permissions = Permission::pluck('title', 'id')->toArray();
     }
 
     /**
@@ -89,6 +98,7 @@ class Index extends Component
             'dataIds',
             'title',
             'detail',
+            'permissionId',
         ]);
 
         // These two methods do the same thing, they clear the error bag.
@@ -108,6 +118,22 @@ class Index extends Component
         $this->dataId = $data->id;
         $this->title = $data->title;
         $this->detail = $data->detail;
+
+        $this->permissionId = ($data->permissions) ? ($data->permissions->pluck('id')->toArray()) : [];
+    }
+
+    public function setPermissionId(int $value)
+    {
+        $array = $this->permissionId;
+        if (in_array($value, $array)) {
+            if (($key = array_search($value, $array)) !== false) {
+                unset($array[$key]);
+            }
+        } else {
+            array_push($array, $value);
+        }
+
+        $this->permissionId = $array;
     }
 
     /**
@@ -160,6 +186,8 @@ class Index extends Component
         $data->title = $this->title;
         $data->detail = $this->detail;
         $data->save();
+
+        $data->permissions()->sync($this->permissionId);
 
         session()->flash('message', 'data saved successfully.');
 
@@ -222,6 +250,8 @@ class Index extends Component
         $data->title = $this->title;
         $data->detail = $this->detail;
         $data->save();
+
+        $data->permissions()->sync($this->permissionId);
 
         session()->flash('message', 'data updated successfully.');
 

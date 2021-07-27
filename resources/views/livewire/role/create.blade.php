@@ -28,6 +28,22 @@
         class="mt-1 block w-full rounded-md shadow-sm focus:ring focus:ring-opacity-50 {{ $borderColor }}" />
       <x-error field="detail" class="mt-1 font-medium text-sm text-red-600" />
     </div>
+
+    <div class="mt-4">
+      <x-jet-label for="permissionId" value="permission" class="capitalize" />
+      <div class="mt-2">
+        @foreach($permissions as $permissionsId => $permissionsTitle)
+        <div>
+          <label class="inline-flex items-center">
+            <x-checkbox name="permissionId.{{ $permissionsId }}" id="permissionId.{{ $permissionsId }}" value="{{ $permissionsId }}" wire:model.defer="permissionId"
+              class="rounded border-jets-300 text-jets-600 shadow-sm focus:ring focus:border-jets-300 focus:ring-jets-200 focus:ring-opacity-50" />
+            <span class="ml-2 capitalize"> {{ $permissionsTitle }} </span>
+          </label>
+        </div>
+        @endforeach
+      </div>
+      <x-error field="permissionId" class="mt-1 font-medium text-sm text-red-600" />
+    </div>
   </x-slot>
 
   <x-slot name="footer">
