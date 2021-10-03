@@ -122,9 +122,9 @@ class Datatables extends DataTableComponent
         return [
             'verified' => Filter::make('E-mail Verified')
                 ->select([
-                    ''    => 'All',
+                    '' => 'All',
                     'yes' => 'Yes',
-                    'no'  => 'No',
+                    'no' => 'No',
                 ]),
             'verifiedFrom' => Filter::make('Verified From')
                 ->date([
@@ -136,9 +136,9 @@ class Datatables extends DataTableComponent
                 ]),
             'activeFilter' => Filter::make('Active')
                 ->select([
-                    ''    => 'All',
+                    '' => 'All',
                     'yes' => 'Yes',
-                    'no'  => 'No',
+                    'no' => 'No',
                 ]),
             'roleFilter' => Filter::make('Role')
                 ->select($roleArray),

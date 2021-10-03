@@ -9,10 +9,10 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Str;
 
 class Index extends Component
 {
@@ -97,7 +97,9 @@ class Index extends Component
         abort_if(Gate::denies('userAccess'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('livewire.user.index')
-            ->layoutData(['title' =>  $this->title]);
+            ->layoutData([
+                'title' => $this->title
+            ]);
     }
 
     /**
@@ -308,7 +310,7 @@ class Index extends Component
                     }
                 }
             ],
-            'email'    => [
+            'email' => [
                 'required',
                 'string',
                 'email:rfc,dns',
@@ -324,7 +326,7 @@ class Index extends Component
                     }
                 }
             ],
-            'phone'    => [
+            'phone' => [
                 'required',
                 'numeric',
                 Rule::unique('App\Models\User', 'phone')->ignore($this->dataId)->where(function ($query) {
@@ -424,11 +426,11 @@ class Index extends Component
     {
         abort_if(Gate::denies('userDelete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        if (!empty($this->dataIds)) {
+        if (! empty($this->dataIds)) {
             User::whereIn('id', $this->dataIds)->delete();
         }
 
-        if (!empty($this->dataId)) {
+        if (! empty($this->dataId)) {
             User::find($this->dataId)->delete();
         }
 

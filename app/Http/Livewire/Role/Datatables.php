@@ -129,12 +129,12 @@ class Datatables extends DataTableComponent
     public function query(): Builder
     {
         return Role::query()
-            ->when($this->getFilter('verified'), function ($query, $verified) {
-                if ($verified === 'yes') {
-                    return $query->whereNotNull('email_verified_at');
+            ->when($this->getFilter('activeFilter'), function ($query, $active) {
+                if ($active === 'yes') {
+                    return $query->where('is_active', 1);
                 }
 
-                return $query->whereNull('email_verified_at');
+                return $query->where('is_active', 0);
             });
     }
 
